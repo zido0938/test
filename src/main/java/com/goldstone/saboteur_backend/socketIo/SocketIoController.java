@@ -3,7 +3,7 @@ package com.goldstone.saboteur_backend.socketIo;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.goldstone.saboteur_backend.service.gameRoom.GameRoomRequestDto;
+import com.goldstone.saboteur_backend.dtos.gameRoom.GameRoomRequestDto;
 import com.goldstone.saboteur_backend.service.gameRoom.GameRoomServiceImpl;
 import java.util.List;
 import java.util.Map;

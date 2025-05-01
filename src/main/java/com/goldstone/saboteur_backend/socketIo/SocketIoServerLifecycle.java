@@ -22,6 +22,8 @@ public class SocketIoServerLifecycle {
     /** SocketIo 서버 종료 */
     @PreDestroy
     public void stop() {
-        server.stop();
+        if (server != null) {
+            server.stop();
+        }
     }
 }

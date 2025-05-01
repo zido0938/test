@@ -1,4 +1,4 @@
-package com.goldstone.saboteur_backend.service.gameRoom;
+package com.goldstone.saboteur_backend.dtos.gameRoom;
 
 import java.util.UUID;
 import lombok.*;

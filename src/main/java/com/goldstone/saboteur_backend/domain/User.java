@@ -3,7 +3,11 @@ package com.goldstone.saboteur_backend.domain;
 import com.goldstone.saboteur_backend.domain.enums.UserStatus;
 import java.time.LocalDate;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.ToString;
 
+@ToString
+@Getter
 public class User {
     private UUID id;
     private String nickname;
@@ -14,21 +18,5 @@ public class User {
         this.id = UUID.randomUUID();
         this.nickname = nickname;
         this.birthDate = birthDate;
-    }
-
-    @Override
-    public String toString() {
-        return "id: "
-                + this.id.toString()
-                + "\n"
-                + "nickname: "
-                + this.nickname
-                + "\n"
-                + "birthDate: "
-                + this.birthDate
-                + "\n"
-                + "status: "
-                + this.status
-                + "\n";
     }
 }
