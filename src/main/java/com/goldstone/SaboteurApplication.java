@@ -1,4 +1,4 @@
-package com.goldstone.saboteur_backend;
+package com.goldstone;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
