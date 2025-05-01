@@ -13,17 +13,13 @@ public class SocketIoServerLifecycle {
         this.server = server;
     }
 
-    /**
-     * SocketIo 서버 시작
-     */
+    /** SocketIo 서버 시작 */
     @PostConstruct
     public void start() {
         server.start();
     }
 
-    /**
-     * SocketIo 서버 종료
-     */
+    /** SocketIo 서버 종료 */
     @PreDestroy
     public void stop() {
         server.stop();
