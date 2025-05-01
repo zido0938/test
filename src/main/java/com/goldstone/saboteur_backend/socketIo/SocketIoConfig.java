@@ -17,7 +17,6 @@ public class SocketIoConfig {
     public SocketIOServer socketIoServer() {
         com.corundumstudio.socketio.Configuration config =
                 new com.corundumstudio.socketio.Configuration();
-        System.out.println("hostname: " + hostname);
         config.setHostname(hostname);
         config.setPort(port);
         return new SocketIOServer(config);

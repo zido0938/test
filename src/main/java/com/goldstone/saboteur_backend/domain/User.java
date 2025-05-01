@@ -9,9 +9,9 @@ import lombok.ToString;
 @ToString
 @Getter
 public class User {
-    private UUID id;
+    private final UUID id;
+    private final LocalDate birthDate;
     private String nickname;
-    private LocalDate birthDate;
     private UserStatus status = UserStatus.ACTIVATED;
 
     public User(String nickname, LocalDate birthDate) {
