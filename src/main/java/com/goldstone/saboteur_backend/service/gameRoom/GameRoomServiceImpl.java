@@ -3,24 +3,22 @@ package com.goldstone.saboteur_backend.service.gameRoom;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.goldstone.saboteur_backend.domain.GameRoom;
 import com.goldstone.saboteur_backend.domain.User;
-import com.goldstone.saboteur_backend.dtos.gameRoom.GameRoomRequestDto;
-import com.goldstone.saboteur_backend.dtos.gameRoom.GameRoomResponseDto;
-import java.time.LocalDate;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GameRoomServiceImpl implements GameRoomService {
 
-    public static GameRoom createGameRoom(
-            SocketIOClient client, GameRoomRequestDto.CreateGameRoomRequestDto dto) {
-        User master = new User(dto.getUserId().toString(), LocalDate.now());
+    @Override
+    public void joinUser(SocketIOClient client, GameRoom gameRoom, User user) throws Exception {
+        try {
+            if (gameRoom.getPlayers().size() >= gameRoom.getSetting().getMaxPlayers()) {
+                throw new Exception("Max player reached");
+            }
 
-        GameRoom gameRoom = new GameRoom(master, "겁나 쩌는 게임", 10, 3);
-
-        GameRoomResponseDto.CreateGameRoomResponseDto responseDto =
-                GameRoomResponseDto.CreateGameRoomResponseDto.of(gameRoom);
-
-        client.joinRoom(gameRoom.getId().toString());
-        client.sendEvent("gameRoomCreated", responseDto);
-
-        return gameRoom;
+            gameRoom.getPlayers().add(user);
+            client.joinRoom(gameRoom.getId().toString());
+        } catch (Exception e) {
+            client.sendEvent("error", e.getMessage());
+        }
     }
 }

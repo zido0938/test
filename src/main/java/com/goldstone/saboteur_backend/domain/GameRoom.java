@@ -2,6 +2,9 @@ package com.goldstone.saboteur_backend.domain;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.goldstone.saboteur_backend.domain.enums.GameRoomStatus;
+import com.goldstone.saboteur_backend.dtos.gameRoom.request.CreateGameRoomRequestDto;
+import com.goldstone.saboteur_backend.dtos.gameRoom.response.CreateGameRoomResponseDto;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,16 +28,16 @@ public class GameRoom {
         this.setting = new GameRoomSetting(this, title, maxPlayers, minPlayers);
     }
 
-    public void joinUser(SocketIOClient client, User user) throws Exception {
-        try {
-            if (this.players.size() >= this.setting.getMaxPlayers()) {
-                throw new Exception("Max player reached");
-            }
+    public static GameRoom createGameRoom(SocketIOClient client, CreateGameRoomRequestDto dto) {
+        User master = new User(dto.getUserId().toString(), LocalDate.now());
 
-            this.players.add(user);
-            client.joinRoom(this.id.toString());
-        } catch (Exception e) {
-            client.sendEvent("error", e.getMessage());
-        }
+        GameRoom gameRoom = new GameRoom(master, "겁나 쩌는 게임", 10, 3);
+
+        CreateGameRoomResponseDto responseDto = CreateGameRoomResponseDto.of(gameRoom);
+
+        client.joinRoom(gameRoom.getId().toString());
+        client.sendEvent("gameRoomCreated", responseDto);
+
+        return gameRoom;
     }
 }
