@@ -11,10 +11,10 @@ public class CreateGameRoomResponseDto {
     private String id;
     private UserInfoResponseDto masterPlayer;
 
-    public static CreateGameRoomResponseDto of(GameRoom gameRoom) {
+    public static CreateGameRoomResponseDto from(GameRoom gameRoom) {
         return CreateGameRoomResponseDto.builder()
                 .id(gameRoom.getId().toString())
-                .masterPlayer(UserInfoResponseDto.of(gameRoom.getMaster()))
+                .masterPlayer(UserInfoResponseDto.from(gameRoom.getMaster()))
                 .build();
     }
 }

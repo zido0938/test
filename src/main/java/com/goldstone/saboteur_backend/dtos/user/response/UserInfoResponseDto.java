@@ -11,7 +11,7 @@ public class UserInfoResponseDto {
     private String nickname;
     private String birthDate;
 
-    public static UserInfoResponseDto of(User user) {
+    public static UserInfoResponseDto from(User user) {
         return UserInfoResponseDto.builder()
                 .id(user.getId().toString())
                 .nickname(user.getNickname())

@@ -33,7 +33,7 @@ public class GameRoom {
 
         GameRoom gameRoom = new GameRoom(master, "겁나 쩌는 게임", 10, 3);
 
-        CreateGameRoomResponseDto responseDto = CreateGameRoomResponseDto.of(gameRoom);
+        CreateGameRoomResponseDto responseDto = CreateGameRoomResponseDto.from(gameRoom);
 
         client.joinRoom(gameRoom.getId().toString());
         client.sendEvent("gameRoomCreated", responseDto);
