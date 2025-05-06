@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: saboteur
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+
+  data:
+    redis:
+      host:
+      port:
+
+socketio:
+  server:
+    hostname:
+    port:
+
+logging:
+  level:
+    org.springframework.boot.autoconfigure: error
