@@ -8,11 +8,6 @@ spring:
     username:
     password:
 
-  data:
-    redis:
-      host:
-      port:
-
 socketio:
   server:
     hostname:
