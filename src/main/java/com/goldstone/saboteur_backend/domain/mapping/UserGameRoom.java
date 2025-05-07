@@ -1,44 +1,46 @@
-package com.goldstone.saboteur_backend.domain;
+package com.goldstone.saboteur_backend.domain.mapping;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.goldstone.saboteur_backend.domain.GameRoom;
+import com.goldstone.saboteur_backend.domain.User;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@Getter
 @Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GameLog extends BaseEntity {
-
+@EntityListeners(AuditingEntityListener.class)
+public class UserGameRoom extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Long gameId;
+	@ManyToOne
+	@JoinColumn(name = "room_id")
+	private GameRoom gameRoom;
 
-	@OneToMany
-	private List<User> users;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
-	private LocalDateTime startDate;
+	// private Boolean isReady = false;
 
-	private LocalDateTime endDate;
-
-	@OneToMany(mappedBy = "gameLog")
-	private List<GameRoundLog> roundLogs;
+	@CreatedDate
+	private LocalDateTime joinedAt = LocalDateTime.now();
 }
