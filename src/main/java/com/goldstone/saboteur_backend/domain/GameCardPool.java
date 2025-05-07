@@ -25,4 +25,15 @@ public class GameCardPool extends BaseEntity {
 
 	@OneToMany
 	private List<Card> cards;
+
+	public boolean isEmpty() {
+		return cards.isEmpty();
+	}
+
+	public Card drawCard() {
+		if (isEmpty()) {
+			return null; //예외처리
+		}
+		return cards.remove(cards.size() - 1);
+	}
 }

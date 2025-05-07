@@ -2,6 +2,8 @@ package com.goldstone.saboteur_backend.domain;
 
 import java.util.List;
 
+import org.springframework.web.filter.CharacterEncodingFilter;
+
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 
 import jakarta.persistence.Entity;
@@ -25,5 +27,8 @@ public class ChatManager extends BaseEntity {
 	@OneToMany
 	private List<ChatMessage> chatHistory;
 
-	//chatfilter ??
+	//filter ??
+
+	//sendMessage
+
 }

@@ -25,4 +25,8 @@ public class UserCardDeck extends BaseEntity {
 
 	@OneToMany
 	private List<Card> cards;
+
+	private boolean hasCard(Card card) {
+		return cards.stream().anyMatch(c -> c.getId().equals(card.getId()));
+	}
 }

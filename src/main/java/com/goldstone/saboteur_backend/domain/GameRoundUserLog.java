@@ -33,4 +33,12 @@ public class GameRoundUserLog extends BaseEntity {
 	private GameRole role;
 
 	private Integer goldCount;
+
+	public String createRawLog() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("User: ").append(user.getNickname()).append(", ");
+		sb.append("Role: ").append(role).append(", ");
+		sb.append("Gold Count: ").append(goldCount);
+		return sb.toString();
+	}
 }

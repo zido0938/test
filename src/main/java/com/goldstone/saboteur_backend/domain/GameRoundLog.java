@@ -44,4 +44,15 @@ public class GameRoundLog extends BaseEntity {
 
 	@ManyToOne
 	private GameLog gameLog;
+
+	public String createRawLog() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Game ID: ").append(gameId).append("\n");
+		sb.append("Round ID: ").append(roundId).append("\n");
+		sb.append("Round Start Date: ").append(roundStartDate).append("\n");
+		sb.append("Round End Date: ").append(roundEndDate).append("\n");
+		sb.append("Winner Role: ").append(winnerRole).append("\n");
+		sb.append("User Logs: ").append(userLogs).append("\n");
+		return sb.toString();
+	}
 }

@@ -24,4 +24,9 @@ public class Timer extends BaseEntity {
 	private Double time;
 
 	private Double maxTime;
+
+	//start()
+	//stop()
+	//reset()
+	//timeout()
 }

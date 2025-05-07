@@ -41,4 +41,22 @@ public class ChatMessage extends BaseEntity {
 
 	@ElementCollection
 	private List<String> BannedWords;
+
+	public String maskInappropriate () {
+		for (String word : BannedWords) {
+			if (content.contains(word)) {
+				content = content.replaceAll(word, "*".repeat(word.length()));
+			}
+		}
+		return content;
+	}
+
+	public boolean isAppropriate () {
+		for (String word : BannedWords) {
+			if (content.contains(word)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

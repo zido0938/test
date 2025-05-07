@@ -27,4 +27,8 @@ public class GameResult extends BaseEntity {
 
 	@OneToMany
 	private List<UserRank> userRank;
+
+	// saveResult (repository 계층..?)
+
+	//getFinalRanks() 는 getUserRank() 와 다른 메서드..?
 }

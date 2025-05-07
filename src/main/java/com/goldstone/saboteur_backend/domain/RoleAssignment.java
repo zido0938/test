@@ -31,4 +31,5 @@ public class RoleAssignment extends BaseEntity {
 
 	private Integer minUsersForSabotage;
 
+	//assignRoles()
 }

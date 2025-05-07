@@ -29,4 +29,8 @@ public class GameCardAssignment extends BaseEntity {
 
 	@OneToMany
 	private List<Card> shuffledCardQueue;
+
+	//shuffleCards()
+
+	//assignCards()
 }

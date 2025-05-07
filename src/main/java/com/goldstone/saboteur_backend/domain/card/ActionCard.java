@@ -20,5 +20,10 @@ public class ActionCard extends Card {
 
 	@Enumerated(EnumType.STRING)
 	private TargetToolType tool;
+
+	//repairTool
+	//destroyTool
+	//fallingRock
+	//peekDestinationCard
 }
 

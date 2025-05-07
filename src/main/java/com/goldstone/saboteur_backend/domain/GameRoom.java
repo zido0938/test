@@ -52,12 +52,6 @@ public class GameRoom extends BaseEntity {
     @OneToOne(mappedBy = "gameRoom", cascade = CascadeType.ALL)
     private GameSetting setting;
 
-    public void changeStatus(GameRoomStatus status) {
-        this.status = status;
-    }
-
-    //canStartGame()
-
     public GameRoom(User master, String title, int maxPlayers, int minPlayers) {
         this.master = master;
         this.players = new ArrayList<>();
@@ -76,5 +70,20 @@ public class GameRoom extends BaseEntity {
         client.sendEvent("gameRoomCreated", responseDto);
 
         return gameRoom;
+    }
+
+    public boolean canStartGame() {
+        return this.players.size() >= this.setting.getMinPlayers();
+        //추가?
+    }
+
+    public void endGame() {
+        this.status = GameRoomStatus.END;
+        this.players.clear();
+        this.round = 1;
+    }
+
+    private void changeStatus(GameRoomStatus status) {
+        this.status = status;
     }
 }

@@ -31,4 +31,8 @@ public class UserAuthentication extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	private UserLoginType loginType;
+
+	public void modifyPassword(String password) {
+		this.password = password;
+	}
 }

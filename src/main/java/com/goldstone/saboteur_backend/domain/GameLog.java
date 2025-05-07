@@ -41,4 +41,22 @@ public class GameLog extends BaseEntity {
 
 	@OneToMany(mappedBy = "gameLog")
 	private List<GameRoundLog> roundLogs;
+
+	public String createWholeRawLog() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Game ID: ").append(gameId).append("\n");
+		sb.append("Start Date: ").append(startDate).append("\n");
+		sb.append("End Date: ").append(endDate).append("\n");
+		sb.append("Users: ").append(users).append("\n");
+		sb.append("Round Logs: ").append(roundLogs).append("\n");
+		return sb.toString();
+	}
+
+	public String createRawLog() { //간단한 버전?
+		StringBuilder sb = new StringBuilder();
+		sb.append("Game ID: ").append(gameId).append("\n");
+		sb.append("Start Date: ").append(startDate).append("\n");
+		sb.append("End Date: ").append(endDate).append("\n");
+		return sb.toString();
+	}
 }
