@@ -1,5 +1,6 @@
 package com.goldstone.saboteur_backend.domain;
 
+import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.UserLoginType;
 
 import jakarta.persistence.Entity;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAuthentication {
+public class UserAuthentication extends BaseEntity {
 	@Id
 	private String id;
 

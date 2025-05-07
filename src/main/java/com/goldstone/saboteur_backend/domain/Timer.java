@@ -1,5 +1,7 @@
 package com.goldstone.saboteur_backend.domain;
 
+import com.goldstone.saboteur_backend.domain.common.BaseEntity;
+
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class Timer {
+public class Timer extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

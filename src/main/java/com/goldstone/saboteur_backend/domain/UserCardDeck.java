@@ -3,6 +3,7 @@ package com.goldstone.saboteur_backend.domain;
 import java.util.List;
 
 import com.goldstone.saboteur_backend.domain.card.Card;
+import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCardDeck {
+public class UserCardDeck extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

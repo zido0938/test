@@ -1,5 +1,6 @@
 package com.goldstone.saboteur_backend.domain;
 
+import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.UserStatus;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -20,7 +21,7 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; //UUID는 JPA가 자동으로 생성해주지 않음
