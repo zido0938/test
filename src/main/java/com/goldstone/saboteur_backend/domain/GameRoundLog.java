@@ -1,5 +1,9 @@
 package com.goldstone.saboteur_backend.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.GameRole;
 import jakarta.persistence.Entity;
@@ -11,7 +15,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,13 +47,21 @@ public class GameRoundLog extends BaseEntity {
     @ManyToOne private GameLog gameLog;
 
     public String createRawLog() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Game ID: ").append(gameId).append("\n");
-        sb.append("Round ID: ").append(roundId).append("\n");
-        sb.append("Round Start Date: ").append(roundStartDate).append("\n");
-        sb.append("Round End Date: ").append(roundEndDate).append("\n");
-        sb.append("Winner Role: ").append(winnerRole).append("\n");
-        sb.append("User Logs: ").append(userLogs).append("\n");
-        return sb.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("gameId", gameId);
+        logMap.put("roundId", roundId);
+        logMap.put("roundStartDate", roundStartDate);
+        logMap.put("roundEndDate", roundEndDate);
+        logMap.put("winnerRole", winnerRole);
+        logMap.put("userLogs", userLogs);
+        try {
+            return mapper.writeValueAsString(logMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert round log to JSON", e);
+        }
     }
 }

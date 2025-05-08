@@ -1,5 +1,10 @@
 package com.goldstone.saboteur_backend.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.GameRole;
 import jakarta.persistence.Entity;
@@ -34,10 +39,16 @@ public class GameRoundUserLog extends BaseEntity {
     private Integer goldCount;
 
     public String createRawLog() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("User: ").append(user.getNickname()).append(", ");
-        sb.append("Role: ").append(role).append(", ");
-        sb.append("Gold Count: ").append(goldCount);
-        return sb.toString();
+        ObjectMapper mapper = new ObjectMapper();
+
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("user", user.getNickname());
+        logMap.put("role", role.name());
+        logMap.put("goldCount", goldCount);
+        try {
+            return mapper.writeValueAsString(logMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert raw log to JSON", e);
+        }
     }
 }
