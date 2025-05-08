@@ -1,15 +1,12 @@
 package com.goldstone.saboteur_backend.domain;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,16 +16,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameResult extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private Double totalPlayTime;
+    private Double totalPlayTime;
 
-	@OneToMany
-	private List<UserRank> userRank;
+    @OneToMany private List<UserRank> userRank;
 
-	// saveResult (repository 계층..?)
+    // saveResult (repository 계층..?)
 
-	//getFinalRanks() 는 getUserRank() 와 다른 메서드..?
+    // getFinalRanks() 는 getUserRank() 와 다른 메서드..?
 }

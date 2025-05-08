@@ -1,7 +1,6 @@
 package com.goldstone.saboteur_backend.domain.card;
 
 import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoalCard extends Card {
-	@Enumerated(EnumType.STRING)
-	private GoalCardType type;
+    @Enumerated(EnumType.STRING)
+    private GoalCardType type;
 }

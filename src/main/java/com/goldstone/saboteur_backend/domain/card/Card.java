@@ -12,7 +12,7 @@ import lombok.Getter;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 public abstract class Card {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 }

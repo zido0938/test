@@ -1,7 +1,6 @@
 package com.goldstone.saboteur_backend.exception;
 
-import com.goldstone.saboteur_backend.exception.code.error.CommonErrorCode;
-
+import com.goldstone.saboteur_backend.exception.code.error.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BusinessException extends RuntimeException {
 
-	private final CommonErrorCode errorCode;
+    private final ErrorCode errorCode;
 }

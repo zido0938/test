@@ -1,9 +1,7 @@
 package com.goldstone.saboteur_backend.domain;
 
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
-
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,18 +13,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class Timer extends BaseEntity {
+public class GameTimer extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private Double time;
+    private Double time;
 
-	private Double maxTime;
+    private Double maxTime;
 
-	//start()
-	//stop()
-	//reset()
-	//timeout()
+    // start()
+    // stop()
+    // reset()
+    // timeout()
 }

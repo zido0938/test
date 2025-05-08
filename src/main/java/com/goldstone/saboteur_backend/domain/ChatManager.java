@@ -1,16 +1,12 @@
 package com.goldstone.saboteur_backend.domain;
 
-import java.util.List;
-
-import org.springframework.web.filter.CharacterEncodingFilter;
-
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,15 +16,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatManager extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@OneToMany
-	private List<ChatMessage> chatHistory;
+    @OneToMany private List<ChatMessage> chatHistory;
 
-	//filter ??
+    // filter ??
 
-	//sendMessage
+    // sendMessage
 
 }

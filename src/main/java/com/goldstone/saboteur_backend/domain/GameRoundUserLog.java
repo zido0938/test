@@ -2,7 +2,6 @@ package com.goldstone.saboteur_backend.domain;
 
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.GameRole;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -19,26 +18,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameRoundUserLog extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(optional = false)
-	private GameRoundLog roundLog;
+    @ManyToOne(optional = false)
+    private GameRoundLog roundLog;
 
-	@ManyToOne(optional = false)
-	private User user;
+    @ManyToOne(optional = false)
+    private User user;
 
-	@Enumerated(EnumType.STRING)
-	private GameRole role;
+    @Enumerated(EnumType.STRING)
+    private GameRole role;
 
-	private Integer goldCount;
+    private Integer goldCount;
 
-	public String createRawLog() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("User: ").append(user.getNickname()).append(", ");
-		sb.append("Role: ").append(role).append(", ");
-		sb.append("Gold Count: ").append(goldCount);
-		return sb.toString();
-	}
+    public String createRawLog() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("User: ").append(user.getNickname()).append(", ");
+        sb.append("Role: ").append(role).append(", ");
+        sb.append("Gold Count: ").append(goldCount);
+        return sb.toString();
+    }
 }

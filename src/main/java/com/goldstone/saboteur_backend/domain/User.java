@@ -2,15 +2,13 @@ package com.goldstone.saboteur_backend.domain;
 
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.UserStatus;
-import java.time.LocalDate;
-import java.util.UUID;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +22,7 @@ import lombok.ToString;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; //UUID는 JPA가 자동으로 생성해주지 않음
+    private Integer id; // UUID는 JPA가 자동으로 생성해주지 않음
 
     private LocalDate birthDate;
 
@@ -38,11 +36,24 @@ public class User extends BaseEntity {
         this.birthDate = birthDate;
     }
 
-    public void modifyNickname(String nickname) { this.nickname = nickname; }
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", nickname='" + nickname + "'}";
+    }
 
-    public void activateUser() { this.status = UserStatus.ACTIVATED; }
+    public void modifyNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
-    public void deactivateUser() { this.status = UserStatus.DEACTIVATED; }
+    public void activateUser() {
+        this.status = UserStatus.ACTIVATED;
+    }
 
-    public void deleteUser() { this.status = UserStatus.DELETED; }
+    public void deactivateUser() {
+        this.status = UserStatus.DEACTIVATED;
+    }
+
+    public void deleteUser() {
+        this.status = UserStatus.DELETED;
+    }
 }

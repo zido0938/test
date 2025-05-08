@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoldCard extends GoalCard {
-	private Integer amount;
+    private Integer amount;
 }

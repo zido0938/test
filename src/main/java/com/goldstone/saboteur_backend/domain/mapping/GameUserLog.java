@@ -3,7 +3,6 @@ package com.goldstone.saboteur_backend.domain.mapping;
 import com.goldstone.saboteur_backend.domain.GameLog;
 import com.goldstone.saboteur_backend.domain.User;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
@@ -22,15 +20,15 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 public class GameUserLog extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "game_log_id")
-	private GameLog gameLog;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "game_log_id")
+    private GameLog gameLog;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

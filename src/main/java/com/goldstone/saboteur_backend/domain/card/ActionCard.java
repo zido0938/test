@@ -2,7 +2,6 @@ package com.goldstone.saboteur_backend.domain.card;
 
 import com.goldstone.saboteur_backend.domain.enums.ActionCardType;
 import com.goldstone.saboteur_backend.domain.enums.TargetToolType;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,15 +14,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActionCard extends Card {
-	@Enumerated(EnumType.STRING)
-	private ActionCardType type;
+    @Enumerated(EnumType.STRING)
+    private ActionCardType type;
 
-	@Enumerated(EnumType.STRING)
-	private TargetToolType tool;
+    @Enumerated(EnumType.STRING)
+    private TargetToolType tool;
 
-	//repairTool
-	//destroyTool
-	//fallingRock
-	//peekDestinationCard
+    // repairTool
+    // destroyTool
+    // fallingRock
+    // peekDestinationCard
 }
-

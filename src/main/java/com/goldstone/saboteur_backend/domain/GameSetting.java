@@ -1,7 +1,6 @@
 package com.goldstone.saboteur_backend.domain;
 
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,34 +17,40 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameSetting extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "game_room_id")
-	private GameRoom gameRoom;
+    @OneToOne
+    @JoinColumn(name = "game_room_id")
+    private GameRoom gameRoom;
 
-	@ManyToOne
-	@JoinColumn(name = "host_id", nullable = false)
-	private User host;
+    @ManyToOne
+    @JoinColumn(name = "host_id", nullable = false)
+    private User host;
 
-	private String title;
+    private String title;
 
-	private Integer maxPlayers = 10;
+    private Integer maxPlayers = 10;
 
-	private Integer minPlayers = 3;
+    private Integer minPlayers = 3;
 
-	public GameSetting(GameRoom gameRoom, String title, int maxPlayers, int minPlayers) {
-		this.gameRoom = gameRoom;
-		this.title = title;
-		this.maxPlayers = maxPlayers;
-		this.minPlayers = minPlayers;
-	}
+    public GameSetting(GameRoom gameRoom, String title, int maxPlayers, int minPlayers) {
+        this.gameRoom = gameRoom;
+        this.title = title;
+        this.maxPlayers = maxPlayers;
+        this.minPlayers = minPlayers;
+    }
 
-	public void modifyMaxUsers(Integer count) { this.maxPlayers = count; }
+    public void modifyMaxUsers(Integer count) {
+        this.maxPlayers = count;
+    }
 
-	public void modifyMinUsers(Integer count) { this.minPlayers = count; }
+    public void modifyMinUsers(Integer count) {
+        this.minPlayers = count;
+    }
 
-	public void modifyTitle(String title) { this.title = title; }
+    public void modifyTitle(String title) {
+        this.title = title;
+    }
 }

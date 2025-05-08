@@ -1,14 +1,8 @@
 package com.goldstone.saboteur_backend.domain.mapping;
 
-import java.time.LocalDateTime;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.goldstone.saboteur_backend.domain.GameRoom;
 import com.goldstone.saboteur_backend.domain.User;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -16,10 +10,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -27,20 +23,19 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class UserGameRoom extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "room_id")
-	private GameRoom gameRoom;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private GameRoom gameRoom;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	// private Boolean isReady = false;
+    // private Boolean isReady = false;
 
-	@CreatedDate
-	private LocalDateTime joinedAt = LocalDateTime.now();
+    @CreatedDate private LocalDateTime joinedAt = LocalDateTime.now();
 }

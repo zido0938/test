@@ -3,14 +3,8 @@ package com.goldstone.saboteur_backend.domain;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.GameRoomStatus;
-import com.goldstone.saboteur_backend.domain.mapping.UserGameRoom;
 import com.goldstone.saboteur_backend.dtos.gameRoom.request.CreateGameRoomRequestDto;
 import com.goldstone.saboteur_backend.dtos.gameRoom.response.CreateGameRoomResponseDto;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,6 +16,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,12 +41,11 @@ public class GameRoom extends BaseEntity {
     @JoinColumn(name = "master_id")
     private User master;
 
-    @OneToMany
-    private List<User> players;
+    @OneToMany private List<User> players;
 
     private Integer round = 1;
 
-    @OneToOne(mappedBy = "gameRoom", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "gameRoom")
     private GameSetting setting;
 
     public GameRoom(User master, String title, int maxPlayers, int minPlayers) {
@@ -74,7 +70,7 @@ public class GameRoom extends BaseEntity {
 
     public boolean canStartGame() {
         return this.players.size() >= this.setting.getMinPlayers();
-        //추가?
+        // 추가?
     }
 
     public void endGame() {
