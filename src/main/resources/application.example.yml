@@ -3,15 +3,19 @@ spring:
     name: saboteur
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name:
     url:
     username:
     password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 socketio:
   server:
-    hostname:
-    port:
+    hostname: localhost
+    port: 8081
 
 logging:
   level:
