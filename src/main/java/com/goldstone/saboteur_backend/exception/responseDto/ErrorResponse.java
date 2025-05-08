@@ -1,6 +1,8 @@
 package com.goldstone.saboteur_backend.exception.responseDto;
 
 import com.goldstone.saboteur_backend.exception.code.error.CommonErrorCode;
+import com.goldstone.saboteur_backend.exception.code.error.ErrorCode;
+
 import java.util.List;
 import lombok.Getter;
 
@@ -11,13 +13,13 @@ public class ErrorResponse {
     private final String message;
     private final List<String> errors;
 
-    public ErrorResponse(CommonErrorCode errorCode) {
+    public ErrorResponse(ErrorCode errorCode) {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
         this.errors = null;
     }
 
-    public ErrorResponse(CommonErrorCode errorCode, List<String> errors) {
+    public ErrorResponse(ErrorCode errorCode, List<String> errors) {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
         this.errors = errors;
