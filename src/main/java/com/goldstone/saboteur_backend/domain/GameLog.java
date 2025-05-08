@@ -1,5 +1,9 @@
 package com.goldstone.saboteur_backend.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +11,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,20 +41,36 @@ public class GameLog extends BaseEntity {
     private List<GameRoundLog> roundLogs;
 
     public String createWholeRawLog() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Game ID: ").append(gameId).append("\n");
-        sb.append("Start Date: ").append(startDate).append("\n");
-        sb.append("End Date: ").append(endDate).append("\n");
-        sb.append("Users: ").append(users).append("\n");
-        sb.append("Round Logs: ").append(roundLogs).append("\n");
-        return sb.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("gameId", gameId);
+        logMap.put("startDate", startDate);
+        logMap.put("endDate", endDate);
+        logMap.put("users", users);
+        logMap.put("roundLogs", roundLogs);
+        try {
+            return mapper.writeValueAsString(logMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert log to JSON", e);
+        }
     }
 
-    public String createRawLog() { // 간단한 버전?
-        StringBuilder sb = new StringBuilder();
-        sb.append("Game ID: ").append(gameId).append("\n");
-        sb.append("Start Date: ").append(startDate).append("\n");
-        sb.append("End Date: ").append(endDate).append("\n");
-        return sb.toString();
+    public String createRawLog() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("gameId", gameId);
+        logMap.put("startDate", startDate);
+        logMap.put("endDate", endDate);
+        try {
+            return mapper.writeValueAsString(logMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert raw log to JSON", e);
+        }
     }
 }
