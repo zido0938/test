@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +28,8 @@ public class UserRank extends BaseEntity {
     private Integer rank;
 
     private Integer goldCount;
+
+    @ManyToOne
+    @JoinColumn(name = "game_result_id")
+    private GameResult gameResult;
 }

@@ -22,12 +22,10 @@ public class GameCardAssignment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "game_card_assignment_id")
+    @OneToMany(mappedBy = "gameCardAssignment")
     private List<User> users;
 
-    @OneToMany
-    @JoinColumn(name = "game_card_assignment_id")
+    @OneToMany(mappedBy = "gameCardAssignment")
     private List<Card> shuffledCardQueue;
 
     // shuffleCards()

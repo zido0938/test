@@ -9,6 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +33,18 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.ACTIVATED;
+
+    @ManyToOne
+    @JoinColumn(name = "game_log_id")
+    private GameLog gameLog;
+
+    @ManyToOne
+    @JoinColumn(name = "game_room_id")
+    private GameRoom gameRoom;
+
+    @ManyToOne
+    @JoinColumn(name = "game_card_assignment_id")
+    private GameCardAssignment gameCardAssignment;
 
     public User(String nickname, LocalDate birthDate) {
         this.nickname = nickname;

@@ -21,8 +21,7 @@ public class ChatManager extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "chat_manager_id")
+    @OneToMany(mappedBy = "chatManager")
     private List<ChatMessage> chatHistory;
 
     // filter ??

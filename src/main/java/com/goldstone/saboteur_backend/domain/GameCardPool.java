@@ -25,8 +25,7 @@ public class GameCardPool extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "game_card_pool_id")
+    @OneToMany(mappedBy = "gameCardPool")
     private Queue<Card> cards = new LinkedList<>();
 
     public boolean isEmpty() {

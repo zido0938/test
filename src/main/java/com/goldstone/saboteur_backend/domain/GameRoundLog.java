@@ -12,6 +12,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
@@ -44,7 +45,9 @@ public class GameRoundLog extends BaseEntity {
     @OneToMany(mappedBy = "roundLog")
     private List<GameRoundUserLog> userLogs;
 
-    @ManyToOne private GameLog gameLog;
+    @ManyToOne
+    @JoinColumn(name = "game_log_id")
+    private GameLog gameLog;
 
     public String createRawLog() {
         ObjectMapper mapper = new ObjectMapper();

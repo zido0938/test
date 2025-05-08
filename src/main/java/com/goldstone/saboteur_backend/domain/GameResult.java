@@ -23,8 +23,7 @@ public class GameResult extends BaseEntity {
 
     private Double totalPlayTime;
 
-    @OneToMany
-    @JoinColumn(name = "game_result_id")
+    @OneToMany(mappedBy = "gameResult")
     private List<UserRank> userRank;
 
     // saveResult (repository 계층..?)

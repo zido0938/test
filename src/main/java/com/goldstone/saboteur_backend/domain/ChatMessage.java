@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,11 +23,17 @@ public class ChatMessage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne private User sender;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     private String content;
 
     private LocalDateTime timestamp;
+
+    @ManyToOne
+    @JoinColumn(name = "chat_manager_id")
+    private ChatManager chatManager;
 
     @ElementCollection private List<String> BannedWords;
 

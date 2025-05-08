@@ -22,8 +22,7 @@ public class UserCardDeck extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "user_card_deck_id")
+    @OneToMany(mappedBy = "userCardDeck")
     private List<Card> cards;
 
     private boolean hasCard(Card card) {

@@ -34,8 +34,7 @@ public class GameLog extends BaseEntity {
 
     private Long gameId;
 
-    @OneToMany
-    @JoinColumn(name = "game_log_id")
+    @OneToMany(mappedBy = "gameLog")
     private List<User> users;
 
     private LocalDateTime startDate;
