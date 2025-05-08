@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -24,7 +25,9 @@ public class GameCardPool extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany private Queue<Card> cards = new LinkedList<>();
+    @OneToMany
+    @JoinColumn(name = "game_card_pool_id")
+    private Queue<Card> cards = new LinkedList<>();
 
     public boolean isEmpty() {
         return cards == null || cards.isEmpty();

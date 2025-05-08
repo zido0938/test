@@ -41,7 +41,9 @@ public class GameRoom extends BaseEntity {
     @JoinColumn(name = "master_id")
     private User master;
 
-    @OneToMany private List<User> players;
+    @OneToMany
+    @JoinColumn(name = "game_room_id")
+    private List<User> players;
 
     private Integer round = 1;
 

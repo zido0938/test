@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,9 @@ public class GameResult extends BaseEntity {
 
     private Double totalPlayTime;
 
-    @OneToMany private List<UserRank> userRank;
+    @OneToMany
+    @JoinColumn(name = "game_result_id")
+    private List<UserRank> userRank;
 
     // saveResult (repository 계층..?)
 

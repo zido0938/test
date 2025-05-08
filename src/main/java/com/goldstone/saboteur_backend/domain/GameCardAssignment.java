@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,13 @@ public class GameCardAssignment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany private List<User> users;
+    @OneToMany
+    @JoinColumn(name = "game_card_assignment_id")
+    private List<User> users;
 
-    @OneToMany private List<Card> shuffledCardQueue;
+    @OneToMany
+    @JoinColumn(name = "game_card_assignment_id")
+    private List<Card> shuffledCardQueue;
 
     // shuffleCards()
 

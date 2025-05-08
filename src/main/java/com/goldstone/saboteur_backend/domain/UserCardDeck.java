@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,9 @@ public class UserCardDeck extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany private List<Card> cards;
+    @OneToMany
+    @JoinColumn(name = "user_card_deck_id")
+    private List<Card> cards;
 
     private boolean hasCard(Card card) {
         return cards.stream().anyMatch(c -> c.getId().equals(card.getId()));

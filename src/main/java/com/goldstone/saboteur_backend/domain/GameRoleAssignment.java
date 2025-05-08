@@ -1,6 +1,8 @@
 package com.goldstone.saboteur_backend.domain;
 
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
+import com.goldstone.saboteur_backend.domain.mapping.UserGameRoleAssignment;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +23,8 @@ public class GameRoleAssignment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany private List<User> users;
+    @OneToMany(mappedBy = "gameRoleAssignment")
+    private List<UserGameRoleAssignment> userGameRoleAssignments;
 
     private Integer maxSabotage;
 

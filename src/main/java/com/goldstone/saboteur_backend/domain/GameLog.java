@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
+import com.goldstone.saboteur_backend.domain.mapping.GameUserLog;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,7 +34,9 @@ public class GameLog extends BaseEntity {
 
     private Long gameId;
 
-    @OneToMany private List<User> users;
+    @OneToMany
+    @JoinColumn(name = "game_log_id")
+    private List<User> users;
 
     private LocalDateTime startDate;
 
