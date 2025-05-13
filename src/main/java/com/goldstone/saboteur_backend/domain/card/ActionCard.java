@@ -1,27 +1,21 @@
 package com.goldstone.saboteur_backend.domain.card;
 
 import com.goldstone.saboteur_backend.domain.enums.ActionCardType;
-import com.goldstone.saboteur_backend.domain.enums.TargetToolType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Setter
 public class ActionCard extends Card {
-    @Enumerated(EnumType.STRING)
-    private ActionCardType type;
+    private ActionCardType actionType;
 
-    @Enumerated(EnumType.STRING)
-    private TargetToolType tool;
+    public ActionCard(String id, String name, ActionCardType actionType) {
+        super(id, name, Type.ACTION);
+        this.actionType = actionType;
+    }
 
-    // repairTool
-    // destroyTool
-    // fallingRock
-    // peekDestinationCard
+    @Override
+    public ActionCard copy() {
+        return (ActionCard) super.clone();
+    }
 }

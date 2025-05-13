@@ -1,36 +1,36 @@
 package com.goldstone.saboteur_backend.domain.card;
 
-import com.goldstone.saboteur_backend.domain.GameCardAssignment;
-import com.goldstone.saboteur_backend.domain.GameCardPool;
-import com.goldstone.saboteur_backend.domain.UserCardDeck;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
+import lombok.Setter;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
-public abstract class Card {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Setter
+public abstract class Card implements Cloneable {
+    public enum Type {
+        PATHWAY, DEADEND, ACTION, ROLE, GOAL
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "game_card_assignment_id")
-    private GameCardAssignment gameCardAssignment;
+    private String id;
+    private String name;
+    private Type type;
+    private String imageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "game_card_pool_id")
-    private GameCardPool gameCardPool;
+    public Card(String id, String name, Type type) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        // 원본 프로젝트의 이미지 경로 형식으로 수정
+        this.imageUrl = "/img/cards/" + id + ".png";
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "user_card_deck_id")
-    private UserCardDeck userCardDeck;
+    public abstract Card copy();
+
+    @Override
+    public Card clone() {
+        try {
+            return (Card) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

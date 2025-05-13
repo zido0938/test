@@ -1,20 +1,23 @@
 package com.goldstone.saboteur_backend.dtos.gameRoom.response;
 
 import com.goldstone.saboteur_backend.domain.GameRoom;
-import com.goldstone.saboteur_backend.dtos.user.response.UserInfoResponseDto;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 @Builder
-@Getter
 public class CreateGameRoomResponseDto {
-    private String id;
-    private UserInfoResponseDto masterPlayer;
+    private String roomId;
+    private String roomName;
+    private int maxPlayers;
+    private int currentPlayers;
 
     public static CreateGameRoomResponseDto from(GameRoom gameRoom) {
         return CreateGameRoomResponseDto.builder()
-                .id(gameRoom.getId().toString())
-                .masterPlayer(UserInfoResponseDto.from(gameRoom.getMaster()))
+                .roomId(gameRoom.getId())
+                .roomName(gameRoom.getName())
+                .maxPlayers(gameRoom.getMaxPlayers())
+                .currentPlayers(gameRoom.getPlayerCount())
                 .build();
     }
 }
