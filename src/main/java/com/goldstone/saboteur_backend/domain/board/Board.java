@@ -1,6 +1,5 @@
 package com.goldstone.saboteur_backend.domain.board;
 
-import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.card.StartCard;
 
@@ -55,4 +54,26 @@ public class Board {
         return goals;
     }
 
+    // x1 & y1: from
+    // x2 & y2: to
+    public boolean isConnected(int x1, int y1, int x2, int y2) {
+        if (!isValidPosition(x1, y1) || !isValidPosition(x2, y2)) return false;
+
+        Cell from = cells[y1][x1];
+        Cell to = cells[y2][x2];
+
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+
+        int direction = -1;
+
+        if (dx == 0 && dy == -1) direction = 0; // 위
+        else if (dx == 1 && dy == 0) direction = 1; // 오른쪽
+        else if (dx == 0 && dy == 1) direction = 2; // 아래
+        else if (dx == -1 && dy == 0) direction = 3; // 왼쪽
+
+        if (direction == -1) return false; // 인접하지 않은 셀
+
+        return PathValidator.isConnected(from, to, direction);
+    }
 }

@@ -34,4 +34,17 @@ public class PathValidator {
         return true;
     }
 
+    //from: 기준 셀, to: 인접 셀
+    //direction: 0: 위, 1: 오른쪽, 2: 아래, 3: 왼쪽
+    public static boolean isConnected(Cell from, Cell to, int direction) {
+        if (!from.hasCard() || !to.hasCard()) return false;
+
+        int opposite = (direction + 2) % 4;
+
+        PathType fromSide = from.getSides()[direction];
+        PathType toSide = to.getSides()[opposite];
+
+        return fromSide == PathType.PATH && toSide == PathType.PATH;
+    }
+
 }
