@@ -3,262 +3,226 @@ package com.goldstone.saboteur_backend.domain;
 import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
-import lombok.Getter;
 
 import java.util.*;
 
-@Getter
-public class Board implements Cloneable {
-    private static final int WIDTH = 9;
-    private static final int HEIGHT = 5;
-
-    private Cell[][] cells;
-    private Position startPosition;
-    private List<Position> goalPositions;
-    private Map<Position, GoalCard> goalCards;
-    private boolean[] revealedGoals;
+public class Board {
+    private final Cell[][] cells;
+    private final Position startPosition;
+    private final List<Position> goalPositions;
+    private final Map<Position, GoalCard> goalCards;
+    private final boolean[] revealedGoals;
+    private boolean goldReached;
 
     public Board() {
-        cells = new Cell[HEIGHT][WIDTH];
-        for (int y = 0; y < HEIGHT; y++) {
-            for (int x = 0; x < WIDTH; x++) {
-                cells[y][x] = new Cell(x, y);
-            }
-        }
+        this.cells = new Cell[5][9];
+        for (int i = 0; i < 5; i++) for (int j = 0; j < 9; j++) cells[i][j] = new Cell();
+        this.startPosition = new Position(0, 2);
+        // 시작점: 십자(╋) 모양, 네 방향 모두 PATH
+        cells[2][0].placeCard(new PathCard("start", "start", new Cell.Side[]{
+                Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH
+        }));
 
-        // 시작 위치 설정
-        startPosition = new Position(0, HEIGHT / 2);
-        cells[startPosition.getY()][startPosition.getX()].openAllSides();
-
-        // 목표 위치 설정
-        goalPositions = new ArrayList<>();
-        goalPositions.add(new Position(WIDTH - 1, 1));
-        goalPositions.add(new Position(WIDTH - 1, HEIGHT / 2));
-        goalPositions.add(new Position(WIDTH - 1, HEIGHT - 2));
-
-        // 골드 카드와 돌 카드 배치
-        goalCards = new HashMap<>();
-        revealedGoals = new boolean[3];
-
-        List<GoalCardType> types = new ArrayList<>();
-        types.add(GoalCardType.GOLD);
-        types.add(GoalCardType.ROCK);
-        types.add(GoalCardType.ROCK);
-        Collections.shuffle(types);
-
-        for (int i = 0; i < 3; i++) {
-            GoalCard goalCard = new GoalCard("goal_" + i, types.get(i).name(), types.get(i));
-            goalCards.put(goalPositions.get(i), goalCard);
-            revealedGoals[i] = false;
-        }
+        this.goalPositions = Arrays.asList(new Position(8, 1), new Position(8, 2), new Position(8, 3));
+        this.goalCards = new HashMap<>();
+        List<GoalCard> goals = new ArrayList<>();
+        goals.add(new GoalCard("goal_gold", "goal_gold", GoalCardType.GOLD));
+        goals.add(new GoalCard("goal_rock_1", "goal_rock_1", GoalCardType.ROCK));
+        goals.add(new GoalCard("goal_rock_2", "goal_rock_2", GoalCardType.ROCK));
+        Collections.shuffle(goals);
+        for (int i = 0; i < goalPositions.size(); i++) goalCards.put(goalPositions.get(i), goals.get(i));
+        this.revealedGoals = new boolean[3];
+        this.goldReached = false;
     }
 
     public boolean canPlaceCard(PathCard card, Position position) {
-        if (position.getX() < 0 || position.getX() >= WIDTH ||
-                position.getY() < 0 || position.getY() >= HEIGHT) {
-            return false;
-        }
+        int x = position.getX(), y = position.getY();
+        if (x < 0 || x >= 9 || y < 0 || y >= 5) return false;
+        if (cells[y][x].hasCard()) return false;
+        if ((x == startPosition.getX() && y == startPosition.getY()) || goalPositions.contains(position)) return false;
 
-        Cell cell = cells[position.getY()][position.getX()];
-        if (cell.hasCard()) {
-            return false;
-        }
-
-        // 목표 카드 위치인지 확인
-        for (Position goalPos : goalPositions) {
-            if (position.equals(goalPos)) {
-                return false;
-            }
-        }
-
-        // 인접한 카드가 있는지 확인
-        boolean hasAdjacentCard = false;
-
-        // 위쪽 셀 확인
-        if (position.getY() > 0) {
-            Cell topCell = cells[position.getY() - 1][position.getX()];
-            if (topCell.hasCard()) {
-                hasAdjacentCard = true;
-                // 연결 가능한지 확인
-                if (topCell.getBottomSide() != Cell.Side.EMPTY &&
-                        !isConnectable(topCell.getBottomSide(), card.getSides()[0])) {
+        // 1. 시작점 인접 위치에 놓는 경우는 "해당 방향만 PATH면 반드시 허용"
+        if (isAdjacentToStart(x, y)) {
+            int dir = getDirectionFromStart(x, y);
+            if (dir != -1) {
+                if (card.getSides()[dir] == Cell.Side.PATH &&
+                        cells[startPosition.getY()][startPosition.getX()].getSides()[opposite(dir)] == Cell.Side.PATH) {
+                    return true;
+                } else {
                     return false;
                 }
             }
         }
 
-        // 오른쪽 셀 확인
-        if (position.getX() < WIDTH - 1) {
-            Cell rightCell = cells[position.getY()][position.getX() + 1];
-            if (rightCell.hasCard()) {
-                hasAdjacentCard = true;
-                if (rightCell.getLeftSide() != Cell.Side.EMPTY &&
-                        !isConnectable(rightCell.getLeftSide(), card.getSides()[1])) {
-                    return false;
-                }
-            }
-        }
+        // 2. 나머지는 기존 규칙 적용
+        boolean hasConnectedNeighbor = false;
+        boolean hasAnyNeighbor = false;
+        for (int dir = 0; dir < 4; dir++) {
+            int nx = x + dx(dir), ny = y + dy(dir);
+            Cell.Side mySide = card.getSides()[dir];
+            boolean neighborExists = (nx >= 0 && nx < 9 && ny >= 0 && ny < 5) && cells[ny][nx].hasCard();
 
-        // 아래쪽 셀 확인
-        if (position.getY() < HEIGHT - 1) {
-            Cell bottomCell = cells[position.getY() + 1][position.getX()];
-            if (bottomCell.hasCard()) {
-                hasAdjacentCard = true;
-                if (bottomCell.getTopSide() != Cell.Side.EMPTY &&
-                        !isConnectable(bottomCell.getTopSide(), card.getSides()[2])) {
-                    return false;
-                }
+            if (mySide == Cell.Side.PATH) {
+                if (!neighborExists) return false;
+                Cell.Side neighborSide = cells[ny][nx].getSides()[opposite(dir)];
+                if (neighborSide != Cell.Side.PATH) return false;
+                if (isConnectedToStart(new Position(nx, ny))) hasConnectedNeighbor = true;
+            } else if (neighborExists) {
+                Cell.Side neighborSide = cells[ny][nx].getSides()[opposite(dir)];
+                if (neighborSide == Cell.Side.PATH) return false;
             }
+            if (neighborExists) hasAnyNeighbor = true;
         }
-
-        // 왼쪽 셀 확인
-        if (position.getX() > 0) {
-            Cell leftCell = cells[position.getY()][position.getX() - 1];
-            if (leftCell.hasCard()) {
-                hasAdjacentCard = true;
-                if (leftCell.getRightSide() != Cell.Side.EMPTY &&
-                        !isConnectable(leftCell.getRightSide(), card.getSides()[3])) {
-                    return false;
-                }
-            }
-        }
-
-        return hasAdjacentCard;
+        return hasAnyNeighbor && hasConnectedNeighbor;
     }
 
-    private boolean isConnectable(Cell.Side side1, PathCard.Side side2) {
-        if (side1 == Cell.Side.PATH && side2 == PathCard.Side.PATH) return true;
-        if (side1 == Cell.Side.DEADEND && side2 == PathCard.Side.DEADEND) return true;
+    private boolean isAdjacentToStart(int x, int y) {
+        int sx = startPosition.getX(), sy = startPosition.getY();
+        return (Math.abs(x - sx) + Math.abs(y - sy)) == 1;
+    }
+
+    // 0:상, 1:우, 2:하, 3:좌 (시작점 기준)
+    private int getDirectionFromStart(int x, int y) {
+        int sx = startPosition.getX(), sy = startPosition.getY();
+        if (x == sx && y == sy - 1) return 2; // 위쪽(시작점 기준)
+        if (x == sx && y == sy + 1) return 0; // 아래쪽(시작점 기준)
+        if (x == sx - 1 && y == sy) return 1; // 왼쪽(시작점 기준)
+        if (x == sx + 1 && y == sy) return 3; // 오른쪽(시작점 기준)
+        return -1;
+    }
+
+    private int dx(int dir) { return new int[]{0, 1, 0, -1}[dir]; }
+    private int dy(int dir) { return new int[]{-1, 0, 1, 0}[dir]; }
+    private int opposite(int dir) { return (dir + 2) % 4; }
+
+    private boolean isConnectedToStart(Position position) {
+        Queue<Position> queue = new LinkedList<>();
+        Set<Position> visited = new HashSet<>();
+        queue.add(startPosition);
+        visited.add(startPosition);
+        while (!queue.isEmpty()) {
+            Position cur = queue.poll();
+            if (cur.equals(position)) return true;
+            int x = cur.getX(), y = cur.getY();
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = x + dx(dir), ny = y + dy(dir);
+                if (nx < 0 || nx >= 9 || ny < 0 || ny >= 5) continue;
+                Position np = new Position(nx, ny);
+                if (visited.contains(np)) continue;
+                if (!cells[ny][nx].hasCard()) continue;
+                Cell.Side mySide = cells[y][x].getSides()[dir];
+                Cell.Side neighborSide = cells[ny][nx].getSides()[opposite(dir)];
+                if (mySide == Cell.Side.PATH && neighborSide == Cell.Side.PATH) {
+                    queue.add(np);
+                    visited.add(np);
+                }
+            }
+        }
         return false;
     }
 
     public void placeCard(PathCard card, Position position) {
-        cells[position.getY()][position.getX()].placePathCard(card);
-
-        // 목표 카드 근처에 카드를 놓았는지 확인하고 공개
-        for (int i = 0; i < goalPositions.size(); i++) {
-            Position goalPos = goalPositions.get(i);
-            if (isAdjacent(position, goalPos) && !revealedGoals[i]) {
-                revealedGoals[i] = true;
-                goalCards.get(goalPos).reveal();
-            }
-        }
+        int x = position.getX(), y = position.getY();
+        if (!canPlaceCard(card, position)) throw new IllegalArgumentException("Cannot place card at position " + position);
+        cells[y][x].placeCard(card);
+        checkGoldReached();
     }
 
-    private boolean isAdjacent(Position pos1, Position pos2) {
-        return (Math.abs(pos1.getX() - pos2.getX()) + Math.abs(pos1.getY() - pos2.getY())) == 1;
+    public void removeCard(Position position) {
+        int x = position.getX(), y = position.getY();
+        if (x < 0 || x >= 9 || y < 0 || y >= 5) throw new IllegalArgumentException("Position out of bounds: " + position);
+        if (!cells[y][x].hasCard()) throw new IllegalArgumentException("No card at position: " + position);
+        cells[y][x].removeCard();
     }
 
-
-    public boolean isGoldReached() {
-        for (Position goalPos : goalPositions) {
-            GoalCard goalCard = goalCards.get(goalPos);
-            // getType() 대신 getGoalType() 사용
-            if (goalCard.getGoalType() == GoalCardType.GOLD && isConnected(startPosition, goalPos)) {
-                return true;
-            }
-        }
-        return false;
+    public void revealGoal(int index) {
+        if (index < 0 || index >= revealedGoals.length) throw new IllegalArgumentException("Invalid goal index: " + index);
+        revealedGoals[index] = true;
     }
 
-
-    private boolean isConnected(Position start, Position end) {
+    private void checkGoldReached() {
         Queue<Position> queue = new LinkedList<>();
         Set<Position> visited = new HashSet<>();
-
-        queue.add(start);
-        visited.add(start);
-
+        queue.add(startPosition);
+        visited.add(startPosition);
         while (!queue.isEmpty()) {
             Position current = queue.poll();
-
-            // 목표 위치 바로 앞에 도달했는지 확인
-            if (isAdjacent(current, end)) {
-                Cell currentCell = cells[current.getY()][current.getX()];
-
-                // 현재 셀에서 목표 셀로 연결되는지 확인
-                if (current.getX() < end.getX() && currentCell.getRightSide() == Cell.Side.PATH) {
-                    return true;
-                }
-                if (current.getX() > end.getX() && currentCell.getLeftSide() == Cell.Side.PATH) {
-                    return true;
-                }
-                if (current.getY() < end.getY() && currentCell.getBottomSide() == Cell.Side.PATH) {
-                    return true;
-                }
-                if (current.getY() > end.getY() && currentCell.getTopSide() == Cell.Side.PATH) {
-                    return true;
+            int x = current.getX(), y = current.getY();
+            for (int i = 0; i < goalPositions.size(); i++) {
+                Position goalPos = goalPositions.get(i);
+                if (x == goalPos.getX() - 1 && y == goalPos.getY()) {
+                    GoalCard goalCard = goalCards.get(goalPos);
+                    if (goalCard.getGoalType() == GoalCardType.GOLD) {
+                        goldReached = true;
+                        revealedGoals[i] = true;
+                        return;
+                    }
                 }
             }
-
-            // 이웃 셀 탐색
-            List<Position> neighbors = getConnectedNeighbors(current);
-            for (Position neighbor : neighbors) {
-                if (!visited.contains(neighbor)) {
-                    queue.add(neighbor);
-                    visited.add(neighbor);
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private List<Position> getConnectedNeighbors(Position position) {
-        List<Position> neighbors = new ArrayList<>();
-        Cell cell = cells[position.getY()][position.getX()];
-
-        // 위쪽 확인
-        if (position.getY() > 0 && cell.getTopSide() == Cell.Side.PATH) {
-            Cell topCell = cells[position.getY() - 1][position.getX()];
-            if (topCell.getBottomSide() == Cell.Side.PATH) {
-                neighbors.add(new Position(position.getX(), position.getY() - 1));
-            }
-        }
-
-        // 오른쪽 확인
-        if (position.getX() < WIDTH - 1 && cell.getRightSide() == Cell.Side.PATH) {
-            Cell rightCell = cells[position.getY()][position.getX() + 1];
-            if (rightCell.getLeftSide() == Cell.Side.PATH) {
-                neighbors.add(new Position(position.getX() + 1, position.getY()));
-            }
-        }
-
-        // 아래쪽 확인
-        if (position.getY() < HEIGHT - 1 && cell.getBottomSide() == Cell.Side.PATH) {
-            Cell bottomCell = cells[position.getY() + 1][position.getX()];
-            if (bottomCell.getTopSide() == Cell.Side.PATH) {
-                neighbors.add(new Position(position.getX(), position.getY() + 1));
-            }
-        }
-
-        // 왼쪽 확인
-        if (position.getX() > 0 && cell.getLeftSide() == Cell.Side.PATH) {
-            Cell leftCell = cells[position.getY()][position.getX() - 1];
-            if (leftCell.getRightSide() == Cell.Side.PATH) {
-                neighbors.add(new Position(position.getX() - 1, position.getY()));
-            }
-        }
-
-        return neighbors;
-    }
-
-    @Override
-    public Board clone() {
-        try {
-            Board clone = (Board) super.clone();
-            clone.cells = new Cell[HEIGHT][WIDTH];
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int x = 0; x < WIDTH; x++) {
-                    clone.cells[y][x] = this.cells[y][x].copy();
-                }
-            }
-            clone.goalPositions = new ArrayList<>(this.goalPositions);
-            clone.goalCards = new HashMap<>(this.goalCards);
-            clone.revealedGoals = this.revealedGoals.clone();
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            checkAdjacentCell(queue, visited, x, y-1, 0, 2);
+            checkAdjacentCell(queue, visited, x+1, y, 1, 3);
+            checkAdjacentCell(queue, visited, x, y+1, 2, 0);
+            checkAdjacentCell(queue, visited, x-1, y, 3, 1);
         }
     }
+
+    private void checkAdjacentCell(Queue<Position> queue, Set<Position> visited, int x, int y, int fromSide, int toSide) {
+        if (x < 0 || x >= 9 || y < 0 || y >= 5) return;
+        Position pos = new Position(x, y);
+        if (visited.contains(pos)) return;
+        Cell cell = cells[y][x];
+        if (!cell.hasCard()) return;
+        if (cell.getSides()[toSide] == Cell.Side.PATH) {
+            queue.add(pos);
+            visited.add(pos);
+        }
+    }
+
+    public boolean isGoldReached() { return goldReached; }
+    public Cell[][] getCells() { return cells; }
+    public Position getStartPosition() { return startPosition; }
+    public List<Position> getGoalPositions() { return goalPositions; }
+    public Map<Position, GoalCard> getGoalCards() { return goalCards; }
+    public boolean[] getRevealedGoals() { return revealedGoals; }
+
+    // 경로카드의 연결 정보에 따라 ASCII 문자 반환 (시각화)
+    public static String getPathAscii(Cell.Side[] sides, boolean isDeadend) {
+        boolean up = sides[0] == Cell.Side.PATH;
+        boolean right = sides[1] == Cell.Side.PATH;
+        boolean down = sides[2] == Cell.Side.PATH;
+        boolean left = sides[3] == Cell.Side.PATH;
+
+        if (isDeadend) {
+            // deadend는 가운데가 막혀있음을 점(·)으로 표시
+            if (up && down && !right && !left) return "│·";
+            if (!up && !down && right && left) return "─·";
+            if (up && right && down && left) return "+·";
+            if (!up && right && down && left) return "┴·";
+            if (!up && !right && down && left) return "┘·";
+            if (!up && right && down && !left) return "└·";
+            if (!up && !right && !down && left) return "╴·";
+            if (!up && !right && down && !left) return "╷·";
+            // ... 필요시 추가
+        }
+
+        // path류는 기존대로
+        if (up && right && down && left) return "+";
+        if (up && right && down) return "┤";
+        if (up && down && left) return "├";
+        if (up && right && left) return "┬";
+        if (right && down && left) return "┴";
+        if (up && right) return "└";
+        if (right && down) return "┌";
+        if (down && left) return "┐";
+        if (up && left) return "┘";
+        if (up && down) return "│";
+        if (right && left) return "─";
+        if (down) return "↓";
+        if (up) return "↑";
+        if (right) return "→";
+        if (left) return "←";
+        return "·";
+    }
+
+
 }

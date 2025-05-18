@@ -1,105 +1,88 @@
 package com.goldstone.saboteur_backend.domain;
 
-import com.goldstone.saboteur_backend.domain.card.Card;
-import com.goldstone.saboteur_backend.domain.card.CardDeck;
-import com.goldstone.saboteur_backend.domain.card.PathCard;
+import com.goldstone.saboteur_backend.domain.card.*;
 import com.goldstone.saboteur_backend.domain.enums.GameRole;
-import lombok.Getter;
-import lombok.Setter;
+import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
 
 import java.util.*;
 
-@Getter
-@Setter
 public class Game {
     private String id;
+    private CardDeck cardDeck;
     private List<Player> players;
-    private Board board;
-    private CardDeck deck;
     private int currentPlayerIndex;
-    private boolean isGoldFound;
-    private Map<String, Integer> goldNuggets; // 플레이어별 금덩이 수
+    private Board board;
+    private boolean gameOver;
+    private boolean goldFound;
+    private Map<String, Integer> goldNuggets;
     private List<GameStateChangeListener> listeners;
 
     public Game() {
         this.id = UUID.randomUUID().toString();
+        this.cardDeck = new CardDeck();
         this.players = new ArrayList<>();
-        this.board = new Board();
-        this.deck = new CardDeck();
         this.currentPlayerIndex = 0;
-        this.isGoldFound = false;
+        this.board = new Board();
+        this.gameOver = false;
+        this.goldFound = false;
         this.goldNuggets = new HashMap<>();
         this.listeners = new ArrayList<>();
+    }
+
+    public void addListener(GameStateChangeListener listener) {
+        listeners.add(listener);
     }
 
     public void addPlayer(Player player) {
         players.add(player);
         goldNuggets.put(player.getId(), 0);
-        firePlayerAdded(player);
+        notifyPlayerAdded(player);
     }
 
     public void start() {
-        if (players.size() < 3 || players.size() > 10) {
-            throw new IllegalStateException("게임은 3명에서 10명 사이의 플레이어가 필요합니다.");
-        }
-
-        // 역할 카드 분배
+        // 역할 분배
         distributeRoles();
 
         // 초기 카드 분배
         dealInitialCards();
 
-        // 첫 플레이어 설정
-        currentPlayerIndex = 0;
-
-        fireGameStarted();
+        // 게임 시작 알림
+        notifyGameStarted();
     }
 
     private void distributeRoles() {
+        int playerCount = players.size();
+        int saboteurCount = getSaboteurCount(playerCount);
+        int goldDiggerCount = playerCount - saboteurCount;
+
         List<GameRole> roles = new ArrayList<>();
-
-        // 플레이어 수에 따라 역할 카드 생성
-        int goldDiggers = 0;
-        int saboteurs = 0;
-
-        if (players.size() <= 5) {
-            goldDiggers = players.size() - 2;
-            saboteurs = 2;
-        } else if (players.size() <= 7) {
-            goldDiggers = players.size() - 3;
-            saboteurs = 3;
-        } else {
-            goldDiggers = players.size() - 4;
-            saboteurs = 4;
+        for (int i = 0; i < goldDiggerCount; i++) {
+            roles.add(GameRole.MINE_WORKER);
         }
-
-        // 역할 추가
-        for (int i = 0; i < goldDiggers; i++) {
-            roles.add(GameRole.GOLD_DIGGER);
-        }
-
-        for (int i = 0; i < saboteurs; i++) {
+        for (int i = 0; i < saboteurCount; i++) {
             roles.add(GameRole.SABOTEUR);
         }
 
-        // 역할 섞기
         Collections.shuffle(roles);
 
-        // 플레이어에게 역할 분배
         for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            player.setRole(roles.get(i));
+            players.get(i).setRole(roles.get(i));
         }
     }
 
-    private void dealInitialCards() {
-        // 카드 덱 섞기
-        deck.shuffle();
+    private int getSaboteurCount(int playerCount) {
+        if (playerCount <= 3) return 1;
+        if (playerCount <= 5) return 2;
+        if (playerCount <= 8) return 3;
+        return 4; // 9-10 players
+    }
 
-        // 각 플레이어에게 카드 분배
+    private void dealInitialCards() {
+        int handSize = getInitialHandSize(players.size());
+
         for (Player player : players) {
-            for (int i = 0; i < 6; i++) {
-                Card card = deck.drawCard();
+            for (int i = 0; i < handSize; i++) {
+                Card card = cardDeck.drawCard();
                 if (card != null) {
                     player.addCardToHand(card);
                 }
@@ -107,161 +90,168 @@ public class Game {
         }
     }
 
-    public boolean canPlayCard(Player player, Card card, Position position) {
-        // 플레이어가 현재 플레이어인지 확인
-        if (!players.get(currentPlayerIndex).getId().equals(player.getId())) {
-            return false;
-        }
-
-        // 플레이어가 핸디캡이 있는지 확인
-        if (player.isHandicapped()) {
-            return false;
-        }
-
-        // 카드가 플레이어의 손에 있는지 확인
-        if (player.getCard(card.getId()) == null) {
-            return false;
-        }
-
-        // 카드 타입에 따라 다른 검증 로직 적용
-        if (card instanceof PathCard) {
-            return board.canPlaceCard((PathCard) card, position);
-        }
-
-        // 액션 카드 등 다른 카드 타입에 대한 검증 로직 추가
-
-        return true;
+    private int getInitialHandSize(int playerCount) {
+        if (playerCount <= 5) return 6;
+        if (playerCount <= 7) return 5;
+        return 4; // 8-10 players
     }
 
-    public void playCard(Player player, Card card, Position position) {
-        // 카드를 플레이할 수 있는지 확인
-        if (!canPlayCard(player, card, position)) {
-            throw new IllegalStateException("이 카드를 플레이할 수 없습니다.");
+    public void playCard(Player player, PathCard card, Position position) {
+        // 카드 사용
+        player.removeCardFromHand(card);
+        board.placeCard(card, position);
+
+        // 골드 도달 확인
+        checkGoldReached();
+
+        // 카드 뽑기
+        drawCardForPlayer(player);
+
+        // 게임 종료 조건 확인
+        checkGameEndConditions();
+
+        // 알림
+        notifyCardPlayed(player, card, position);
+
+        // 다음 턴
+        if (!gameOver) {
+            nextTurn();
+        }
+    }
+
+    public void playActionCard(Player player, ActionCard card, Player targetPlayer) {
+        // 카드 사용
+        player.removeCardFromHand(card);
+
+        // 카드 뽑기
+        drawCardForPlayer(player);
+
+        // 게임 종료 조건 확인
+        checkGameEndConditions();
+
+        // 알림
+        notifyActionCardPlayed(player, card, targetPlayer);
+
+        // 다음 턴
+        if (!gameOver) {
+            nextTurn();
+        }
+    }
+
+    public void discardAndEndTurn(Player player, Card card) {
+        // 카드 버리기
+        player.removeCardFromHand(card);
+
+        // 카드 뽑기
+        drawCardForPlayer(player);
+
+        // 게임 종료 조건 확인
+        checkGameEndConditions();
+
+        // 다음 턴
+        if (!gameOver) {
+            nextTurn();
+        }
+    }
+
+    public Card drawCardForPlayer(Player player) {
+        if (cardDeck.isEmpty()) {
+            return null;
         }
 
-        // 카드 타입에 따라 다른 로직 적용
-        if (card instanceof PathCard) {
-            board.placeCard((PathCard) card, position);
+        Card card = cardDeck.drawCard();
+        if (card != null) {
+            player.addCardToHand(card);
+        }
+        return card;
+    }
 
-            // 골드에 도달했는지 확인
-            if (board.isGoldReached()) {
-                isGoldFound = true;
-                distributeGoldReward();
-                fireGameEnded();
+    private void checkGoldReached() {
+        if (board.isGoldReached()) {
+            goldFound = true;
+            gameOver = true;
+            distributeGoldNuggets();
+            notifyGameEnded();
+        }
+    }
+
+    private void checkGameEndConditions() {
+        // 이미 골드를 찾았으면 게임 종료
+        if (goldFound) {
+            return;
+        }
+
+        // 모든 플레이어가 카드를 낼 수 없는지 확인
+        boolean allPlayersUnable = true;
+        for (Player player : players) {
+            if (player.canPlayCards()) {
+                allPlayersUnable = false;
+                break;
             }
         }
 
-        // 플레이어의 손에서 카드 제거
-        player.removeCardFromHand(card);
-
-        // 새 카드 드로우
-        Card newCard = deck.drawCard();
-        if (newCard != null) {
-            player.addCardToHand(newCard);
+        // 카드 덱이 비었고 모든 플레이어가 카드를 낼 수 없으면 게임 종료
+        if (cardDeck.isEmpty() && allPlayersUnable) {
+            gameOver = true;
+            notifyGameEnded();
         }
-
-        fireCardPlayed(player, card, position);
-
-        // 다음 플레이어로 턴 넘김
-        nextTurn();
     }
 
-    public void playActionCard(Player player, Card card, Player targetPlayer) {
-        // 액션 카드 처리 로직
-        // 구현 필요
-
-        // 플레이어의 손에서 카드 제거
-        player.removeCardFromHand(card);
-
-        // 새 카드 드로우
-        Card newCard = deck.drawCard();
-        if (newCard != null) {
-            player.addCardToHand(newCard);
+    private void distributeGoldNuggets() {
+        // 골드 발굴자에게 금덩이 분배
+        for (Player player : players) {
+            if (player.getRole() == GameRole.MINE_WORKER) {
+                goldNuggets.put(player.getId(), goldNuggets.getOrDefault(player.getId(), 0) + 1);
+            }
         }
-
-        fireActionCardPlayed(player, card, targetPlayer);
-
-        // 다음 플레이어로 턴 넘김
-        nextTurn();
     }
 
     private void nextTurn() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-        fireNextTurn();
-
-        // 게임 종료 조건 확인
-        if (deck.isEmpty() && !isGoldFound) {
-            fireGameEnded();
-        }
+        notifyNextTurn();
     }
 
-    private void distributeGoldReward() {
-        // 골드를 찾은 플레이어에게 보상 지급
-        Player currentPlayer = players.get(currentPlayerIndex);
-
-        // 역할에 따라 보상 분배
-        for (Player player : players) {
-            if (player.getRole() == GameRole.GOLD_DIGGER) {
-                // 금광을 찾은 플레이어가 금광 발굴자인 경우
-                int nuggets = goldNuggets.getOrDefault(player.getId(), 0);
-                if (player.getId().equals(currentPlayer.getId())) {
-                    nuggets += 3; // 금광을 찾은 발굴자는 3개
-                } else {
-                    nuggets += 2; // 다른 발굴자는 2개
-                }
-                goldNuggets.put(player.getId(), nuggets);
-            }
-        }
+    public void nextTurnPublic() {
+        nextTurn();
     }
 
-    public Player getCurrentPlayer() {
-        return players.get(currentPlayerIndex);
+    public void endGame() {
+        gameOver = true;
+        notifyGameEnded();
     }
 
-    public boolean isGameOver() {
-        return isGoldFound || deck.isEmpty();
-    }
-
-    // 이벤트 리스너 관련 메서드
-    public void addListener(GameStateChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(GameStateChangeListener listener) {
-        listeners.remove(listener);
-    }
-
-    protected void fireGameStarted() {
+    // 알림 메서드들
+    private void notifyGameStarted() {
         for (GameStateChangeListener listener : listeners) {
             listener.onGameStarted(this);
         }
     }
 
-    protected void firePlayerAdded(Player player) {
+    private void notifyPlayerAdded(Player player) {
         for (GameStateChangeListener listener : listeners) {
             listener.onPlayerAdded(this, player);
         }
     }
 
-    protected void fireCardPlayed(Player player, Card card, Position position) {
+    private void notifyCardPlayed(Player player, Card card, Position position) {
         for (GameStateChangeListener listener : listeners) {
             listener.onCardPlayed(this, player, card, position);
         }
     }
 
-    protected void fireActionCardPlayed(Player player, Card card, Player targetPlayer) {
+    private void notifyActionCardPlayed(Player player, Card card, Player targetPlayer) {
         for (GameStateChangeListener listener : listeners) {
             listener.onActionCardPlayed(this, player, card, targetPlayer);
         }
     }
 
-    protected void fireNextTurn() {
+    private void notifyNextTurn() {
         for (GameStateChangeListener listener : listeners) {
             listener.onNextTurn(this);
         }
     }
 
-    protected void fireGameEnded() {
+    private void notifyGameEnded() {
         for (GameStateChangeListener listener : listeners) {
             listener.onGameEnded(this);
         }
@@ -276,4 +266,39 @@ public class Game {
         void onNextTurn(Game game);
         void onGameEnded(Game game);
     }
+
+
+    // Getter 메서드들(테스트용)
+    public String getId() {
+        return id;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public Player getCurrentPlayer() {
+        return players.get(currentPlayerIndex);
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public boolean isGoldFound() {
+        return goldFound;
+    }
+
+    public Map<String, Integer> getGoldNuggets() {
+        return goldNuggets;
+    }
+
+    public CardDeck getCardDeck() {
+        return cardDeck;
+    }
+
 }

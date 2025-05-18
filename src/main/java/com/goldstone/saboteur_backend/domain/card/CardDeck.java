@@ -1,130 +1,110 @@
-package com.goldstone.saboteur_backend.domain.card;
+package com.goldstone.saboteur_backend.domain;
 
+import com.goldstone.saboteur_backend.domain.card.*;
 import com.goldstone.saboteur_backend.domain.enums.ActionCardType;
-import lombok.Getter;
+import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-@Getter
 public class CardDeck {
     private List<Card> cards;
-    private int currentIndex;
 
     public CardDeck() {
-        cards = new ArrayList<>();
-        initializeCards();
+        this.cards = new ArrayList<>();
+        initializeDeck();
         shuffle();
-        currentIndex = 0;
     }
 
-    private void initializeCards() {
-        // 경로 카드 추가
-        addPathCards();
+    private void initializeDeck() {
+        // 목표 카드
+        cards.add(new GoalCard("goal_gold", "goal_gold", GoalCardType.GOLD));
+        cards.add(new GoalCard("goal_rock_1", "goal_rock_1", GoalCardType.ROCK));
+        cards.add(new GoalCard("goal_rock_2", "goal_rock_2", GoalCardType.ROCK));
 
-        // 액션 카드 추가
-        addActionCards();
-    }
+        // 주요 path/deadend 카드들 (상,우,하,좌)
+        cards.add(new PathCard("path_crossroad_1", "path_crossroad_1", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_crossroad_2", "path_crossroad_2", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_crossroad_3", "path_crossroad_3", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_crossroad_4", "path_crossroad_4", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_crossroad_5", "path_crossroad_5", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
 
-    private void addPathCards() {
-        // 원본 프로젝트의 카드 ID 형식으로 수정
-        // 직선 경로
-        for (int i = 0; i < 4; i++) {
-            cards.add(new PathCard("path_straight_" + i, "Straight Path",
-                    new PathCard.Side[]{PathCard.Side.PATH, PathCard.Side.ROCK, PathCard.Side.PATH, PathCard.Side.ROCK}, false));
-        }
+        // 수평 일자
+        cards.add(new PathCard("path_horizontal_1", "path_horizontal_1", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_horizontal_2", "path_horizontal_2", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_horizontal_3", "path_horizontal_3", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
 
-        // 교차로 경로
-        for (int i = 0; i < 5; i++) {
-            cards.add(new PathCard("path_cross_" + i, "Cross Path",
-                    new PathCard.Side[]{PathCard.Side.PATH, PathCard.Side.PATH, PathCard.Side.PATH, PathCard.Side.PATH}, false));
-        }
+        // 수직 일자
+        cards.add(new PathCard("path_vertical_1", "path_vertical_1", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
+        cards.add(new PathCard("path_vertical_2", "path_vertical_2", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
+        cards.add(new PathCard("path_vertical_3", "path_vertical_3", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
+        cards.add(new PathCard("path_vertical_4", "path_vertical_4", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
 
-        // T자 경로
-        for (int i = 0; i < 5; i++) {
-            cards.add(new PathCard("path_t_" + i, "T Path",
-                    new PathCard.Side[]{PathCard.Side.PATH, PathCard.Side.PATH, PathCard.Side.PATH, PathCard.Side.ROCK}, false));
-        }
+        // 코너 (왼쪽위, 오른쪽위, 왼쪽아래, 오른쪽아래)
+        cards.add(new PathCard("path_left_1", "path_left_1", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_left_2", "path_left_2", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_left_3", "path_left_3", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_left_4", "path_left_4", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_left_5", "path_left_5", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND, Cell.Side.PATH}));
 
-        // 코너 경로
-        for (int i = 0; i < 4; i++) {
-            cards.add(new PathCard("path_corner_" + i, "Corner Path",
-                    new PathCard.Side[]{PathCard.Side.PATH, PathCard.Side.PATH, PathCard.Side.ROCK, PathCard.Side.ROCK}, false));
-        }
+        cards.add(new PathCard("path_right_1", "path_right_1", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND}));
+        cards.add(new PathCard("path_right_2", "path_right_2", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND}));
+        cards.add(new PathCard("path_right_3", "path_right_3", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND}));
+        cards.add(new PathCard("path_right_4", "path_right_4", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND}));
 
-        // 막다른 길
-        for (int i = 0; i < 3; i++) {
-            cards.add(new PathCard("path_deadend_" + i, "Dead End",
-                    new PathCard.Side[]{PathCard.Side.DEADEND, PathCard.Side.DEADEND, PathCard.Side.DEADEND, PathCard.Side.DEADEND}, true));
-        }
-    }
+        // T자 (상,우,하,좌)
+        cards.add(new PathCard("path_horizontal_t_1", "path_horizontal_t_1", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_horizontal_t_2", "path_horizontal_t_2", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_horizontal_t_3", "path_horizontal_t_3", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_horizontal_t_4", "path_horizontal_t_4", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("path_horizontal_t_5", "path_horizontal_t_5", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
 
-    private void addActionCards() {
-        // 원본 프로젝트의 카드 ID 형식으로 수정
-        // 도구 파괴 카드
-        for (int i = 0; i < 3; i++) {
-            cards.add(new ActionCard("action_break_pick_" + i, "Break Pick", ActionCardType.BREAK_PICK));
-        }
+        cards.add(new PathCard("path_vertical_t_1", "path_vertical_t_1", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_vertical_t_2", "path_vertical_t_2", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_vertical_t_3", "path_vertical_t_3", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_vertical_t_4", "path_vertical_t_4", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("path_vertical_t_5", "path_vertical_t_5", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
 
-        for (int i = 0; i < 3; i++) {
-            cards.add(new ActionCard("action_break_lamp_" + i, "Break Lamp", ActionCardType.BREAK_LAMP));
-        }
+        // 데드엔드
+        cards.add(new PathCard("deadend_both_horizontal", "deadend_both_horizontal", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("deadend_both_vertical", "deadend_both_vertical", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
+        cards.add(new PathCard("deadend_crossroad", "deadend_crossroad", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH}));
+        cards.add(new PathCard("deadend_horizontal_t", "deadend_horizontal_t", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH}));
+        cards.add(new PathCard("deadend_left", "deadend_left", new Cell.Side[]{Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
+        cards.add(new PathCard("deadend_right", "deadend_right", new Cell.Side[]{Cell.Side.PATH, Cell.Side.PATH, Cell.Side.PATH, Cell.Side.DEADEND}));
+        cards.add(new PathCard("deadend_single_horizontal", "deadend_single_horizontal", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND, Cell.Side.DEADEND}));
+        cards.add(new PathCard("deadend_vertical", "deadend_vertical", new Cell.Side[]{Cell.Side.DEADEND, Cell.Side.DEADEND, Cell.Side.PATH, Cell.Side.DEADEND}));
 
-        for (int i = 0; i < 3; i++) {
-            cards.add(new ActionCard("action_break_cart_" + i, "Break Cart", ActionCardType.BREAK_CART));
-        }
+        // ... 모든 path_*, deadend_* 카드에 대해 Side 배열을 실제 이미지 연결에 맞게 추가해야 함
 
-        // 도구 수리 카드
-        for (int i = 0; i < 2; i++) {
-            cards.add(new ActionCard("action_fix_pick_" + i, "Fix Pick", ActionCardType.FIX_PICK));
-        }
-
-        for (int i = 0; i < 2; i++) {
-            cards.add(new ActionCard("action_fix_lamp_" + i, "Fix Lamp", ActionCardType.FIX_LAMP));
-        }
-
-        for (int i = 0; i < 2; i++) {
-            cards.add(new ActionCard("action_fix_cart_" + i, "Fix Cart", ActionCardType.FIX_CART));
-        }
-
-        // 다용도 수리 카드
-        for (int i = 0; i < 2; i++) {
-            cards.add(new ActionCard("action_fix_pick_lamp_" + i, "Fix Pick/Lamp", ActionCardType.FIX_PICK_LAMP));
-        }
-
-        for (int i = 0; i < 2; i++) {
-            cards.add(new ActionCard("action_fix_pick_cart_" + i, "Fix Pick/Cart", ActionCardType.FIX_PICK_CART));
-        }
-
-        for (int i = 0; i < 2; i++) {
-            cards.add(new ActionCard("action_fix_lamp_cart_" + i, "Fix Lamp/Cart", ActionCardType.FIX_LAMP_CART));
-        }
-
-        // 맵 보기 카드
-        for (int i = 0; i < 6; i++) {
-            cards.add(new ActionCard("action_map_" + i, "Map", ActionCardType.MAP));
-        }
-
-        // 무너뜨리기 카드
-        for (int i = 0; i < 3; i++) {
-            cards.add(new ActionCard("action_collapse_" + i, "Collapse", ActionCardType.COLLAPSE));
-        }
+        // 액션 카드 (이미지명에 맞게)
+        cards.add(new ActionCard("block_cart", "block_cart", ActionCardType.BREAK_CART));
+        cards.add(new ActionCard("block_lantern", "block_lantern", ActionCardType.BREAK_LAMP));
+        cards.add(new ActionCard("block_pickaxe", "block_pickaxe", ActionCardType.BREAK_PICK));
+        cards.add(new ActionCard("repair_cart", "repair_cart", ActionCardType.FIX_CART));
+        cards.add(new ActionCard("repair_lantern", "repair_lantern", ActionCardType.FIX_LAMP));
+        cards.add(new ActionCard("repair_pickaxe", "repair_pickaxe", ActionCardType.FIX_PICK));
+        cards.add(new ActionCard("repair_cart_lantern", "repair_cart_lantern", ActionCardType.FIX_LAMP_CART));
+        cards.add(new ActionCard("repair_cart_pickaxe", "repair_cart_pickaxe", ActionCardType.FIX_PICK_CART));
+        cards.add(new ActionCard("repair_lantern_pickaxe", "repair_lantern_pickaxe", ActionCardType.FIX_PICK_LAMP));
+        cards.add(new ActionCard("map", "map", ActionCardType.MAP));
+        cards.add(new ActionCard("rockfall", "rockfall", ActionCardType.COLLAPSE));
+        // ... 기타 필요 액션카드 추가
     }
 
     public void shuffle() {
         Collections.shuffle(cards);
-        currentIndex = 0;
     }
 
     public Card drawCard() {
-        if (currentIndex >= cards.size()) {
-            return null; // 카드가 없음
-        }
-        return cards.get(currentIndex++);
+        if (cards.isEmpty()) return null;
+        return cards.remove(cards.size() - 1);
     }
 
     public boolean isEmpty() {
-        return currentIndex >= cards.size();
+        return cards.isEmpty();
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 }

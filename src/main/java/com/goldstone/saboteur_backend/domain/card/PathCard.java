@@ -1,29 +1,28 @@
 package com.goldstone.saboteur_backend.domain.card;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.goldstone.saboteur_backend.domain.Cell;
 
-@Getter
-@Setter
 public class PathCard extends Card {
-    public enum Side {
-        ROCK, PATH, DEADEND
+    public static Cell.Side Side;
+    private Cell.Side[] sides;
+
+    public PathCard(String id, String name, Cell.Side[] sides) {
+        super(id, name, Card.CardType.PATHWAY); // CardType 수정
+        this.sides = sides;
     }
 
-    private Side[] sides; // [top, right, bottom, left]
-    private boolean isDeadEnd;
-
-    public PathCard(String id, String name, Side[] sides, boolean isDeadEnd) {
-        super(id, name, isDeadEnd ? Type.DEADEND : Type.PATHWAY);
-        this.sides = sides;
-        this.isDeadEnd = isDeadEnd;
+    public Cell.Side[] getSides() {
+        return sides;
     }
 
     public PathCard rotate(int times) {
         times = times % 4;
-        if (times == 0) return this;
+        // 0도(0)와 180도(2)만 허용
+        if (times != 0 && times != 2) {
+            return this;
+        }
 
-        Side[] newSides = new Side[4];
+        Cell.Side[] newSides = new Cell.Side[4];
         for (int i = 0; i < 4; i++) {
             newSides[(i + times) % 4] = sides[i];
         }
@@ -31,10 +30,7 @@ public class PathCard extends Card {
         return this;
     }
 
-    @Override
     public PathCard copy() {
-        PathCard copy = (PathCard) super.clone();
-        copy.sides = this.sides.clone();
-        return copy;
+        return new PathCard(getId(), getName(), sides.clone());
     }
 }
