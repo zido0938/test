@@ -7,16 +7,11 @@ import lombok.Getter;
 
 @Getter
 public class Cell {
-    private int x;
-    private int y;
     private Position position;
     private Card card;
     private PathType[] sides;
 
-
     public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
         this.position = new Position(x, y);
         this.card = null;
         this.sides = new PathType[]{PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
@@ -35,7 +30,7 @@ public class Cell {
         this.sides = new PathType[]{PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
     }
 
-    public boolean hasCard() {
+    public boolean isEmpty() {
         return this.card != null;
     }
 

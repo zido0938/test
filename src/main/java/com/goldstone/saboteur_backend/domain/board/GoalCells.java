@@ -7,30 +7,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Goals {
+public class GoalCells {
     private final GoalCard goldGoal;
     private final GoalCard emptyGoal1;
     private final GoalCard emptyGoal2;
 
-    public Goals() {
+    public GoalCells() {
         this.goldGoal = new GoalCard(GoalCardType.GOLD);
         this.emptyGoal1 = new GoalCard(GoalCardType.EMPTY);
         this.emptyGoal2 = new GoalCard(GoalCardType.EMPTY);
     }
 
-    public void assignToBoard(Cell[][] cells) {
+    public List<GoalCard> shuffleGoals() {
+        // 목적지 섞기
         List<GoalCard> shuffledGoals = Arrays.asList(goldGoal, emptyGoal1, emptyGoal2);
         Collections.shuffle(shuffledGoals);
-
-        int goalX = cells[0].length - 1; // 오른쪽 끝 열
-
-        cells[0][goalX].setCard(shuffledGoals.get(0)); // Top row
-        cells[2][goalX].setCard(shuffledGoals.get(1)); // Middle row
-        cells[4][goalX].setCard(shuffledGoals.get(2)); // Bottom row
+        return shuffledGoals;
     }
 
-    public List<GoalCard> getAllGoals() {
-        return Arrays.asList(goldGoal, emptyGoal1, emptyGoal2);
-    }
 }
 
