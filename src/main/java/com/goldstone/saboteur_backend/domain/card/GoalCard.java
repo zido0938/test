@@ -1,7 +1,6 @@
 package com.goldstone.saboteur_backend.domain.card;
 
 import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
-import com.goldstone.saboteur_backend.domain.enums.PathCardType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

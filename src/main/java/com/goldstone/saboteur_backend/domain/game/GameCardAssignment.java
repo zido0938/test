@@ -1,7 +1,7 @@
 package com.goldstone.saboteur_backend.domain.game;
 
-import com.goldstone.saboteur_backend.domain.user.User;
 import com.goldstone.saboteur_backend.domain.card.Card;
+import com.goldstone.saboteur_backend.domain.user.User;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

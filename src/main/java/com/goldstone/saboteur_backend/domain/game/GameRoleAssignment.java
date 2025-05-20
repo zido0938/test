@@ -1,9 +1,9 @@
 package com.goldstone.saboteur_backend.domain.game;
 
-import com.goldstone.saboteur_backend.domain.user.User;
 import com.goldstone.saboteur_backend.domain.enums.GameRole;
 import com.goldstone.saboteur_backend.domain.mapping.UserGameRole;
 import com.goldstone.saboteur_backend.domain.mapping.UserGameRoom;
+import com.goldstone.saboteur_backend.domain.user.User;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

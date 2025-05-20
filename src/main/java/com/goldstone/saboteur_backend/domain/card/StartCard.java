@@ -16,4 +16,3 @@ public class StartCard extends PathCard {
     @Override
     public void use() {}
 }
-

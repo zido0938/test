@@ -1,9 +1,9 @@
 package com.goldstone.saboteur_backend.domain.mapping;
 
-import com.goldstone.saboteur_backend.domain.game.GameRoom;
-import com.goldstone.saboteur_backend.domain.user.User;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.GameRole;
+import com.goldstone.saboteur_backend.domain.game.GameRoom;
+import com.goldstone.saboteur_backend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
