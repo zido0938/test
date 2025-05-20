@@ -2,6 +2,8 @@ package com.goldstone.saboteur_backend.domain.board;
 
 import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
+import com.goldstone.saboteur_backend.domain.enums.PathCardType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,9 +14,9 @@ public class GoalCells {
     private final GoalCard emptyGoal2;
 
     public GoalCells() {
-        this.goldGoal = new GoalCard(GoalCardType.GOLD);
-        this.emptyGoal1 = new GoalCard(GoalCardType.EMPTY);
-        this.emptyGoal2 = new GoalCard(GoalCardType.EMPTY);
+        this.goldGoal = new GoalCard(GoalCardType.GOLD, PathCardType.CROSSROAD);
+        this.emptyGoal1 = new GoalCard(GoalCardType.EMPTY, PathCardType.LEFT_TURN);
+        this.emptyGoal2 = new GoalCard(GoalCardType.EMPTY, PathCardType.RIGHT_TURN);
     }
 
     public List<GoalCard> shuffleGoals() {
