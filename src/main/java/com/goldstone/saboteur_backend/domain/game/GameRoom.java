@@ -1,11 +1,11 @@
 package com.goldstone.saboteur_backend.domain.game;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.goldstone.saboteur_backend.domain.user.User;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
 import com.goldstone.saboteur_backend.domain.enums.GameRoomStatus;
 import com.goldstone.saboteur_backend.domain.mapping.UserGameRole;
 import com.goldstone.saboteur_backend.domain.mapping.UserGameRoom;
+import com.goldstone.saboteur_backend.domain.user.User;
 import com.goldstone.saboteur_backend.dtos.gameRoom.request.CreateGameRoomRequestDto;
 import com.goldstone.saboteur_backend.dtos.gameRoom.response.CreateGameRoomResponseDto;
 import jakarta.persistence.Entity;

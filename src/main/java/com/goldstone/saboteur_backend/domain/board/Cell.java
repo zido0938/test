@@ -14,7 +14,8 @@ public class Cell {
     public Cell(int x, int y) {
         this.position = new Position(x, y);
         this.card = null;
-        this.sides = new PathType[]{PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
+        this.sides =
+                new PathType[] {PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
     }
 
     public void setCard(Card card) {
@@ -27,7 +28,8 @@ public class Cell {
 
     public void removeCard() {
         this.card = null;
-        this.sides = new PathType[]{PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
+        this.sides =
+                new PathType[] {PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
     }
 
     public boolean isEmpty() {

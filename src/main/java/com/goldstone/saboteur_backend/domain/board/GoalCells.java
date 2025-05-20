@@ -2,7 +2,6 @@ package com.goldstone.saboteur_backend.domain.board;
 
 import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +23,4 @@ public class GoalCells {
         Collections.shuffle(shuffledGoals);
         return shuffledGoals;
     }
-
 }
-

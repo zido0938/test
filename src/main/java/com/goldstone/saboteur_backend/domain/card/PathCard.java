@@ -38,13 +38,10 @@ public class PathCard extends Card {
     }
 
     @Override
-    void use() {
-    }
+    void use() {}
 
     @Override
     boolean availableUse() {
         return false;
     }
-
-
 }

@@ -4,16 +4,13 @@ import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.card.StartCard;
 import com.goldstone.saboteur_backend.domain.enums.PathType;
-import org.springframework.security.core.parameters.P;
-
-import javax.xml.crypto.dsig.spec.XPathType;
 import java.util.*;
 
 public class Board {
     public static final int WIDTH = 9;
     public static final int HEIGHT = 5;
 
-    private final Map<Position, Cell> dynamicCells = new HashMap<>(); //5*9 범위 밖에도 카드를 연결하기 위한 해시맵
+    private final Map<Position, Cell> dynamicCells = new HashMap<>(); // 5*9 범위 밖에도 카드를 연결하기 위한 해시맵
     private final Set<Position> initArea = new HashSet<>();
 
     private GoalCells goalCells;
@@ -29,7 +26,7 @@ public class Board {
         }
 
         // 시작 카드 배치
-        this.startPos = new Position(0, HEIGHT/2);
+        this.startPos = new Position(0, HEIGHT / 2);
         getCell(startPos).setCard(new StartCard());
 
         // 골 카드 배치
@@ -37,18 +34,17 @@ public class Board {
         List<GoalCard> goals = goalCells.shuffleGoals();
 
         Position[] goalPositions = {
-                new Position(WIDTH - 1, 0),
-                new Position(WIDTH - 1, 2),
-                new Position(WIDTH - 1, 4)
+            new Position(WIDTH - 1, 0), new Position(WIDTH - 1, 2), new Position(WIDTH - 1, 4)
         };
 
-        for(int i=0; i<3; i++){
+        for (int i = 0; i < 3; i++) {
             getCell(goalPositions[i]).setCard(goals.get(i));
         }
     }
 
     public boolean isValidPosition(Position position) {
-        //return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 && position.getY() < height;
+        // return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 &&
+        // position.getY() < height;
         return position != null;
     }
 
@@ -67,7 +63,7 @@ public class Board {
         return false;
     }
 
-    //배치된 길카드의 열린 방향(PATH) 부분에 셀 샐성 <- 초기 5*9 보드에서 확장
+    // 배치된 길카드의 열린 방향(PATH) 부분에 셀 샐성 <- 초기 5*9 보드에서 확장
     private void expandBoard(PathCard pathCard, Position position) {
         for (int i = 0; i < 4; i++) {
             if (pathCard.getSides()[i] == PathType.PATH) {
@@ -77,8 +73,7 @@ public class Board {
         }
     }
 
-
-    //현재 cell의 인접 좌표 반환
+    // 현재 cell의 인접 좌표 반환
     private Position getNeighbor(Position position, int direction) {
         int x = position.getX();
         int y = position.getY();
@@ -106,7 +101,7 @@ public class Board {
         return goalCells;
     }
 
-    //두 카드 간 길이 이어지는지 확인하는 메서드
+    // 두 카드 간 길이 이어지는지 확인하는 메서드
     public boolean isConnected(Position fromPos, Position toPos) {
         if (!isValidPosition(fromPos) || !isValidPosition(toPos)) return false;
 

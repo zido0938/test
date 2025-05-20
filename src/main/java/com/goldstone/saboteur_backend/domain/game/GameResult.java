@@ -1,7 +1,7 @@
 package com.goldstone.saboteur_backend.domain.game;
 
-import com.goldstone.saboteur_backend.domain.user.UserRank;
 import com.goldstone.saboteur_backend.domain.common.BaseEntity;
+import com.goldstone.saboteur_backend.domain.user.UserRank;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.AllArgsConstructor;
