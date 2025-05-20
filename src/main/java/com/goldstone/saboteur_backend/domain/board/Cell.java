@@ -32,8 +32,8 @@ public class Cell {
                 new PathType[] {PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
     }
 
-    public boolean isEmpty() {
-        return this.card != null;
+    public boolean isEmptyCard() {
+        return this.card == null;
     }
 
     public PathType topSide() {
@@ -53,6 +53,12 @@ public class Cell {
     }
 
     public boolean canPlacePathCard(PathCard pathCard) {
-        return PathValidator.canPlacePathCard(this, pathCard);
+        for (int i=0; i<this.sides.length; i++) {
+            if (!this.sides[i].equals(PathType.EMPTY)) {
+                return false;
+            }
+        }
+        return this.isEmptyCard();
+//        return PathValidator.canPlacePathCard(this, pathCard);
     }
 }

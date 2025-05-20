@@ -4,8 +4,11 @@ import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.card.StartCard;
 import com.goldstone.saboteur_backend.domain.enums.PathType;
+import lombok.Getter;
+
 import java.util.*;
 
+@Getter
 public class Board {
     public static final int WIDTH = 9;
     public static final int HEIGHT = 5;
