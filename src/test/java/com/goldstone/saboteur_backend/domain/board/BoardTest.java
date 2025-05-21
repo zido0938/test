@@ -7,8 +7,6 @@ import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.card.StartCard;
 import com.goldstone.saboteur_backend.domain.enums.PathCardType;
 import com.goldstone.saboteur_backend.domain.enums.PathType;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;

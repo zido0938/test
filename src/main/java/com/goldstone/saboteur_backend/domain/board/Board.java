@@ -36,7 +36,7 @@ public class Board {
                         new GoalCard(GoalCardType.EMPTY, PathCardType.RIGHT_TURN));
         Collections.shuffle(goalCards);
 
-        for (int i=0; i<DEFAULT_GOAL_CELL_Y_LIST.length; i++) {
+        for (int i = 0; i < DEFAULT_GOAL_CELL_Y_LIST.length; i++) {
             int x = DEFAULT_WIDTH - 1;
             int y = DEFAULT_GOAL_CELL_Y_LIST[i];
             GoalCard goalCard = goalCards.get(i);
