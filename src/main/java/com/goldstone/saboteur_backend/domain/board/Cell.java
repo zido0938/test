@@ -53,12 +53,12 @@ public class Cell {
     }
 
     public boolean canPlacePathCard(PathCard pathCard) {
-        for (int i=0; i<this.sides.length; i++) {
+        for (int i = 0; i < this.sides.length; i++) {
             if (!this.sides[i].equals(PathType.EMPTY)) {
                 return false;
             }
         }
         return this.isEmptyCard();
-//        return PathValidator.canPlacePathCard(this, pathCard);
+        //        return PathValidator.canPlacePathCard(this, pathCard);
     }
 }

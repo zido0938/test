@@ -36,4 +36,10 @@ public class UserGameRoom extends BaseEntity {
     // private Boolean isReady = false;
 
     @CreatedDate private LocalDateTime joinedAt = LocalDateTime.now();
+
+    // 추가: GameRoom과 User만 받는 생성자(테스트용)
+    public UserGameRoom(GameRoom gameRoom, User user) {
+        this.gameRoom = gameRoom;
+        this.user = user;
+    }
 }
