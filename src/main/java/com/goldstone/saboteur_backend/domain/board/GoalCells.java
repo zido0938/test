@@ -3,6 +3,7 @@ package com.goldstone.saboteur_backend.domain.board;
 import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.enums.GoalCardType;
 import com.goldstone.saboteur_backend.domain.enums.PathCardType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

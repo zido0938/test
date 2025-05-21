@@ -4,8 +4,9 @@ import com.goldstone.saboteur_backend.domain.card.GoalCard;
 import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.card.StartCard;
 import com.goldstone.saboteur_backend.domain.enums.PathType;
-import java.util.*;
 import lombok.Getter;
+import java.util.*;
+
 
 @Getter
 public class Board {
