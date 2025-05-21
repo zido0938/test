@@ -98,6 +98,6 @@ public class Board {
 
         if (direction == -1) return false; // 인접하지 않은 셀
 
-        return true;
+        return PathValidator.isConnected(fromCell, toCell, direction);
     }
 }
