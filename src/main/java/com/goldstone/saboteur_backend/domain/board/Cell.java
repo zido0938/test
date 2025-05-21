@@ -3,21 +3,16 @@ package com.goldstone.saboteur_backend.domain.board;
 import com.goldstone.saboteur_backend.domain.card.Card;
 import com.goldstone.saboteur_backend.domain.card.PathCard;
 import com.goldstone.saboteur_backend.domain.enums.PathType;
-import java.util.Objects;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
-@ToString
 public class Cell {
-    private int x;
-    private int y;
+    private Position position;
     private Card card;
     private PathType[] sides;
 
     public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.position = new Position(x, y);
         this.card = null;
         this.sides =
                 new PathType[] {PathType.EMPTY, PathType.EMPTY, PathType.EMPTY, PathType.EMPTY};
@@ -64,18 +59,6 @@ public class Cell {
             }
         }
         return this.isEmptyCard();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cell)) return false;
-        Cell cell = (Cell) o;
-        return x == cell.x && y == cell.y;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
+        //        return PathValidator.canPlacePathCard(this, pathCard);
     }
 }
