@@ -13,20 +13,23 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GameRoleAssignment {
-    // 플레이어 수에 따른 역할 분배 (사보타지, 광부), private -> public으로 변경함(Test 사용하기 위함)
-    public static final int[][] ROLE_CARD_PAIR = {
-        {0, 0}, // 0명 (유효하지 않음)
-        {0, 0}, // 1명 (유효하지 않음)
-        {0, 0}, // 2명 (유효하지 않음)
-        {1, 2}, // 3명: 사보타지 1명, 광부 2명
-        {1, 3}, // 4명: 사보타지 1명, 광부 3명
-        {2, 3}, // 5명: 사보타지 2명, 광부 3명
-        {2, 4}, // 6명: 사보타지 2명, 광부 4명
-        {3, 4}, // 7명: 사보타지 3명, 광부 4명
-        {3, 5}, // 8명: 사보타지 3명, 광부 5명
-        {3, 6}, // 9명: 사보타지 3명, 광부 6명
-        {4, 6} // 10명: 사보타지 4명, 광부 6명
+    private static final int[][] ROLE_CARD_PAIR = {
+            {0, 0}, // 0명 (유효하지 않음)
+            {0, 0}, // 1명 (유효하지 않음)
+            {0, 0}, // 2명 (유효하지 않음)
+            {1, 2}, // 3명: 사보타지 1명, 광부 2명
+            {1, 3}, // 4명: 사보타지 1명, 광부 3명
+            {2, 3}, // 5명: 사보타지 2명, 광부 3명
+            {2, 4}, // 6명: 사보타지 2명, 광부 4명
+            {3, 4}, // 7명: 사보타지 3명, 광부 4명
+            {3, 5}, // 8명: 사보타지 3명, 광부 5명
+            {3, 6}, // 9명: 사보타지 3명, 광부 6명
+            {4, 6}  // 10명: 사보타지 4명, 광부 6명
     };
+
+    public static int[][] getRoleCardPair() {
+        return ROLE_CARD_PAIR;
+    }
 
     public List<UserGameRole> assignRoles(
             GameRoom gameRoom, List<UserGameRoom> userGameRooms, Integer round) {

@@ -85,8 +85,8 @@ public class GameRoleAndTurnTest {
 
         assertEquals(playerCount, roles.size(), playerCount + "명일 때 모든 플레이어에게 역할이 할당되어야 함");
 
-        int saboteurCount = GameRoleAssignment.ROLE_CARD_PAIR[playerCount][0];
-        int minerCount = GameRoleAssignment.ROLE_CARD_PAIR[playerCount][1];
+        int saboteurCount = GameRoleAssignment.getRoleCardPair()[playerCount][0];
+        int minerCount = GameRoleAssignment.getRoleCardPair()[playerCount][1];
 
         long actualSaboteurCount =
                 roles.stream().filter(role -> role.getRole() == GameRole.SABOTEUR).count();
@@ -114,20 +114,22 @@ public class GameRoleAndTurnTest {
 
         // 초기 턴은 첫 번째 플레이어
         User firstPlayer = users.get(0);
-        assertEquals(
-                firstPlayer,
-                turnManager.getCurrentTurnUser(),
+        assertEquals(firstPlayer, turnManager.getCurrentTurnUser(),
                 playerCount + "명일 때 첫 턴은 첫 번째 플레이어여야 함");
 
+        // nextTurn()을 한 번만 호출했을 때, 두 번째 플레이어가 할당되는지 확인
+        turnManager.nextTurn();
+        assertEquals(users.get(1), turnManager.getCurrentTurnUser(),
+                playerCount + "명일 때 nextTurn() 한 번 호출 시 두 번째 플레이어여야 함");
+
         // 모든 플레이어 턴 진행 후 다시 첫 플레이어로
-        for (int i = 0; i < users.size(); i++) {
+        for (int i = 0; i < users.size() - 1; i++) { // 이미 한 번 nextTurn()을 호출했으므로 users.size() - 2
             turnManager.nextTurn();
         }
-        assertEquals(
-                firstPlayer,
-                turnManager.getCurrentTurnUser(),
+        assertEquals(firstPlayer, turnManager.getCurrentTurnUser(),
                 playerCount + "명일 때 한 바퀴 돌고 다시 첫 플레이어여야 함");
     }
+
 
     /**
      * 플레이어 수(3~10명)별로 카드 분배 및 턴 진행이 공식 룰에 맞게 동작하는지 검증합니다. - 각 플레이어는 플레이어 수에 따라 6/5/4장의 카드를 받아야 합니다.

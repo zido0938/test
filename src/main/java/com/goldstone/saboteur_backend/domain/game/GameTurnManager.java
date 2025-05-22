@@ -18,8 +18,7 @@ public class GameTurnManager {
     private Map<User, UserCardDeck> userCardDecks;
     private int currentTurnIndex = 0;
 
-    public GameTurnManager(
-            GameRoom gameRoom, List<UserGameRoom> userGameRooms, GameCardPool cardPool) {
+    public GameTurnManager(GameRoom gameRoom, List<UserGameRoom> userGameRooms, GameCardPool cardPool) {
         this.gameRoom = gameRoom;
         this.userGameRooms = userGameRooms;
         this.cardPool = cardPool;
@@ -32,11 +31,11 @@ public class GameTurnManager {
             for (int i = 0; i < cardsPerPlayer; i++) {
                 cards.add(cardPool.drawCard());
             }
-            userCardDecks.put(user, new UserCardDeck(user, cards)); //각 플레이어가 카드풀에서 카드를 뽑아 UserCardDeck에 저장
+            // ※ UserCardDeck에 카드풀을 주입하지 않음 (외부에서 카드 드로우)
+            userCardDecks.put(user, new UserCardDeck(user, cards, null));
         }
     }
 
-    //사람수에따라 첫 분배 카드 수 조정
     private int getCardsPerPlayer(int playerCount) {
         if (playerCount >= 3 && playerCount <= 5) return 6;
         if (playerCount >= 6 && playerCount <= 7) return 5;
@@ -45,32 +44,24 @@ public class GameTurnManager {
     }
 
     public User getCurrentTurnUser() {
-        return userGameRooms.get(currentTurnIndex).getUser();  // 현재 턴 유저 반환
+        return userGameRooms.get(currentTurnIndex).getUser();
     }
 
-    /**
-     * 현재 턴 플레이어가 카드를 사용(또는 버림)할 때 호출됩니다.
-     * 현재 턴 플레이어의 손에 해당 카드가 있으면 제거하고 true 반환.
-     * else(카드가 없으면) - false 반환.
-     */
+    // 카드 사용(또는 버림)
     public boolean playCard(Card card) {
         User currentUser = getCurrentTurnUser();
         UserCardDeck deck = userCardDecks.get(currentUser);
-        if (deck != null && deck.getCards().contains(card)) {
-            deck.getCards().remove(card);
-            return true;
-        }
-        return false;
+        return deck.useCard(card);
     }
 
-    // 턴 종료 직전에 카드 드로우를 자동으로 처리
+    // 턴 종료 직전에 카드 드로우
     public User nextTurn() {
         User currentUser = getCurrentTurnUser();
         UserCardDeck deck = userCardDecks.get(currentUser);
 
-        // 턴 종료 직전에 카드 드로우 (덱이 남아있을 때)
+        // ※ UserCardDeck에 카드풀을 주입하지 않았으므로, GameTurnManager가 카드풀에서 뽑아 추가
         if (!cardPool.isEmpty()) {
-            deck.getCards().add(cardPool.drawCard());
+            deck.addCard(cardPool.drawCard());
         }
 
         // 다음 플레이어로 이동
