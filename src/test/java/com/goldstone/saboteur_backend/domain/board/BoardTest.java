@@ -128,11 +128,18 @@ class BoardTest {
     @Test
     @DisplayName("startCell부터 가로로 이어지는 pathCard를 셋팅했을 때, 모든 길은 이어져있다.")
     void isConnectedHorizontalPathFromStartCell() {
+        int START_CELL_POS_Y = Board.DEFAULT_HEIGHT / 2;
         Board board = new Board();
 
         PathCard pathCard = new PathCard(PathCardType.CROSSROAD, false);
         int pos[][] = {
-            {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0},
+            {1, START_CELL_POS_Y},
+            {2, START_CELL_POS_Y},
+            {3, START_CELL_POS_Y},
+            {4, START_CELL_POS_Y},
+            {5, START_CELL_POS_Y},
+            {6, START_CELL_POS_Y},
+            {7, START_CELL_POS_Y},
         };
 
         for (int i = 0; i < pos.length; i++) {
