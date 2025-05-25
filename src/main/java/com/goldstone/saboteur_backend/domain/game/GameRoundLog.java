@@ -37,6 +37,7 @@ public class GameRoundLog extends BaseEntity {
 
     @OneToMany(mappedBy = "roundLog")
     private List<GameRoundUserLog> userLogs;
+
     @ManyToOne
     @JoinColumn(name = "game_log_id")
     private GameLog gameLog;

@@ -2,11 +2,10 @@ package com.goldstone.saboteur_backend.domain.user;
 
 import com.goldstone.saboteur_backend.domain.card.Card;
 import com.goldstone.saboteur_backend.domain.game.GameCardPool;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor

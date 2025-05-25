@@ -18,7 +18,8 @@ public class GameTurnManager {
     private Map<User, UserCardDeck> userCardDecks;
     private int currentTurnIndex = 0;
 
-    public GameTurnManager(GameRoom gameRoom, List<UserGameRoom> userGameRooms, GameCardPool cardPool) {
+    public GameTurnManager(
+            GameRoom gameRoom, List<UserGameRoom> userGameRooms, GameCardPool cardPool) {
         this.gameRoom = gameRoom;
         this.userGameRooms = userGameRooms;
         this.cardPool = cardPool;

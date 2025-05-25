@@ -29,6 +29,7 @@ public class GameRoundManager {
 
     public void endRound() {
         this.roundEndTime = LocalDateTime.now();
-        this.winnerRole = GameRole.SABOTEUR; // 기본적으로 사보타지 승리  -> 해당부분은 금 목적지 카드가 오픈되었는지 여부에 따라 변경되어야 함
+        this.winnerRole =
+                GameRole.SABOTEUR; // 기본적으로 사보타지 승리  -> 해당부분은 금 목적지 카드가 오픈되었는지 여부에 따라 변경되어야 함
     }
 }
