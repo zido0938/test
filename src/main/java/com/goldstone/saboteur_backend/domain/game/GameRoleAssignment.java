@@ -14,17 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GameRoleAssignment {
     private static final int[][] ROLE_CARD_PAIR = {
-        {0, 0}, // 0명 (유효하지 않음)
-        {0, 0}, // 1명 (유효하지 않음)
-        {0, 0}, // 2명 (유효하지 않음)
-        {1, 2}, // 3명: 사보타지 1명, 광부 2명
-        {1, 3}, // 4명: 사보타지 1명, 광부 3명
-        {2, 3}, // 5명: 사보타지 2명, 광부 3명
-        {2, 4}, // 6명: 사보타지 2명, 광부 4명
-        {3, 4}, // 7명: 사보타지 3명, 광부 4명
-        {3, 5}, // 8명: 사보타지 3명, 광부 5명
-        {3, 6}, // 9명: 사보타지 3명, 광부 6명
-        {4, 6} // 10명: 사보타지 4명, 광부 6명
+        {0, 0}, {0, 0}, {0, 0}, {1, 2}, {1, 3}, {2, 3}, {2, 4}, {3, 4}, {3, 5}, {3, 6}, {4, 6}
     };
 
     public static int[][] getRoleCardPair() {
@@ -41,8 +31,8 @@ public class GameRoleAssignment {
             throw new IllegalArgumentException("Invalid player count: " + playerCount);
         }
 
-        int saboteurCount = ROLE_CARD_PAIR[playerCount][0];
-        int minerCount = ROLE_CARD_PAIR[playerCount][1];
+        int saboteurCount = getRoleCardPair()[playerCount][0];
+        int minerCount = getRoleCardPair()[playerCount][1];
 
         List<GameRole> roles = new ArrayList<>();
         for (int i = 0; i < saboteurCount; i++) roles.add(GameRole.SABOTEUR);
@@ -56,10 +46,8 @@ public class GameRoleAssignment {
                             .filter(ugr -> ugr.getUser().equals(user))
                             .findFirst()
                             .orElseThrow();
-
             result.add(new UserGameRole(gameRoom, userGameRoom, user, roles.get(i), round));
         }
-
         return result;
     }
 }
