@@ -1,40 +1,47 @@
 package com.goldstone.saboteur_backend.domain.card;
 
+import com.goldstone.saboteur_backend.domain.enums.PathCardType;
+import com.goldstone.saboteur_backend.domain.enums.PathType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PathCard extends Card {
-    public enum Side {
-        ROCK, PATH, DEADEND
+    private PathCardType pathCardType;
+    private boolean rotated;
+
+    public void rotate() {
+        this.rotated = !rotated;
     }
 
-    private Side[] sides; // [top, right, bottom, left]
-    private boolean isDeadEnd;
-
-    public PathCard(String id, String name, Side[] sides, boolean isDeadEnd) {
-        super(id, name, isDeadEnd ? Type.DEADEND : Type.PATHWAY);
-        this.sides = sides;
-        this.isDeadEnd = isDeadEnd;
+    public PathType top() {
+        return pathCardType.getSides(rotated)[0];
     }
 
-    public PathCard rotate(int times) {
-        times = times % 4;
-        if (times == 0) return this;
+    public PathType right() {
+        return pathCardType.getSides(rotated)[1];
+    }
 
-        Side[] newSides = new Side[4];
-        for (int i = 0; i < 4; i++) {
-            newSides[(i + times) % 4] = sides[i];
-        }
-        sides = newSides;
-        return this;
+    public PathType bottom() {
+        return pathCardType.getSides(rotated)[2];
+    }
+
+    public PathType left() {
+        return pathCardType.getSides(rotated)[3];
+    }
+
+    public PathType[] getSides() {
+        return pathCardType.getSides(rotated);
     }
 
     @Override
-    public PathCard copy() {
-        PathCard copy = (PathCard) super.clone();
-        copy.sides = this.sides.clone();
-        return copy;
+    void use() {}
+
+    @Override
+    boolean availableUse() {
+        return false;
     }
 }
